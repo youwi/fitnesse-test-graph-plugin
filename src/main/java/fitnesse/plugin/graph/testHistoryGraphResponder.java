@@ -38,7 +38,14 @@ public class testHistoryGraphResponder implements Responder{
     html.setTitle("Version Selection: " + resource);
     html.setPageTitle(new PageTitle("Test History Graph", PathParser.parse(resource), pageData.getAttribute(PageData.PropertySUITES)));
 
-    html.put("TestHistoryString", history);
+     String pageName = request.getResource();
+     PageHistory pageHistory = history.getPageHistory(pageName);
+    if(pageHistory==null){
+      response.setContent("{}");
+    }else{
+      JSONObject jsonObject = new JSONObject(pageHistory);
+      html.put("TestHistoryString",  jsonObject.toString());
+    }
     html.setNavTemplate("viewNav");
     html.put("viewLocation", request.getResource());
     html.setMainTemplate("testHistoryGraph");

@@ -1,2 +1,108 @@
-<h2>FitNesse is shutting down...</h2>
-<script src="/files/fitnesse/javascript/echarts.min.js"></script>
+<h2></h2>
+<script src="http://cdn.bootcss.com/echarts/3.6.2/echarts.min.js"></script>
+
+<div id="main" style="width: 600px;height:400px;"></div>
+
+<script>
+    var testHistoryString=${TestHistoryString};
+
+    var datax=[]
+    var dataFail=[]
+    var dataAll=[]
+
+    if(testHistoryString!=null){
+        var src=testHistoryString.testResultMap
+        for(var key in src){
+            datax.push(key)
+        }
+        datax.sort()
+        for(var key of datax){
+            dataAll.push(src[key].right+src[key].wrong)
+            dataFail.push(src[key].wrong)
+        }
+        datax=datax.map((item)=>{
+            var now=new Date(item)
+            var time=""
+            time=[now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/');
+            time+=" "+[ now.getHours(),now.getMinutes(),now.getSeconds()].join(":")
+            return time;
+        })
+    }
+
+    option = {
+        title: {
+            text: 'TimeLine'
+        },
+        tooltip : {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#6a7985'
+                }
+            }
+        },
+        legend: {
+            data:['All Cases','Fail Cases']
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : false,
+                data : datax
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        series : [
+            {
+                name:'Fail Cases',
+                smooth:true,
+                type:'line',
+                areaStyle: {normal: {color:"red"}},
+                data:dataFail
+            },
+            {
+                name:'All Cases',
+                type:'line',
+                smooth:true,
+                areaStyle: {normal: {color:"rgba(216, 201, 205, 0.43)"}},
+                data:dataAll
+            }
+        ]
+        ,  dataZoom: [{
+            type: 'inside',
+            start: 0,
+            end: 100
+        }, {
+            start: 0,
+            end: 100,
+            handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            handleSize: '80%',
+            handleStyle: {
+                color: '#fff',
+                shadowBlur: 3,
+                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                shadowOffsetX: 2,
+                shadowOffsetY: 0
+            }
+        }],
+    };
+
+    var myChart = echarts.init(document.getElementById('main'));
+    myChart.setOption(option);
+</script>
