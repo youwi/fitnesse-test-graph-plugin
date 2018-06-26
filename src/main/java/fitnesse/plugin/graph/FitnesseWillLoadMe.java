@@ -32,8 +32,9 @@ public class FitnesseWillLoadMe  implements PluginFeatureFactory {
   @Override
   public void registerResponders(ResponderFactory responderFactory) throws PluginException {
     System.out.println("-----fitnesse.plugin.graph loaded----");
-    responderFactory.addResponder("testHistoryJson",testHistoryJsonResponder.class);
-    responderFactory.addResponder("testHistoryGraph",testHistoryGraphResponder.class);
+    responderFactory.addResponder("testHistoryJson",TestHistoryJsonResponder.class);
+    responderFactory.addResponder("testHistoryGraph",TestHistoryGraphResponder.class);
+    responderFactory.addResponder("clone",TestHistoryCloneResponder.class);
   }
 
   @Override

@@ -1,7 +1,7 @@
 <h2></h2>
 <script src="http://cdn.bootcss.com/echarts/3.6.2/echarts.min.js"></script>
 
-<div id="main" style="width: 600px;height:400px;"></div>
+<div id="main" style="width: 1000px;height:400px;"></div>
 
 <script>
     var testHistoryString=${TestHistoryString};
@@ -15,7 +15,10 @@
         for(var key in src){
             datax.push(key)
         }
-        datax.sort()
+       // datax.sort() //sort by string
+        datax.sort((a,b)=>{
+            return new Date(a).getTime()-new Date(b).getTime()
+        })
         for(var key of datax){
             dataAll.push(src[key].right+src[key].wrong)
             dataFail.push(src[key].wrong)
@@ -28,6 +31,17 @@
             return time;
         })
     }
+    //delete some cancel Tests
+    for(var i=1;i<datax.length-1;i++){
+       if(dataAll[i]<dataAll[i+1]/2  && dataAll[i]<dataAll[i-1]/2 ){
+           datax.splice(i,1)
+           dataFail.splice(i,1)
+           dataAll.splice(i,1)
+           i--;
+       }
+    }
+
+
 
     option = {
         title: {

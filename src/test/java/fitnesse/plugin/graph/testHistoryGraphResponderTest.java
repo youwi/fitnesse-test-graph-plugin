@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 public class testHistoryGraphResponderTest {
   @Test
   public void makeResponse() throws Exception {
-   //new  testHistoryGraphResponder().makeResponse(null,null,null)
+   //new  TestHistoryGraphResponder().makeResponse(null,null,null)
 
   }
 

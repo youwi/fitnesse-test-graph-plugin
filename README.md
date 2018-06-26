@@ -4,6 +4,7 @@ build a chart on
         http://127.0.0.1:9090/yourWiki?testHistoryGraph
 
 ##How to use
+
 mkdir "plugins" beside fitnesse.jar then restart fitnesse
 
         .

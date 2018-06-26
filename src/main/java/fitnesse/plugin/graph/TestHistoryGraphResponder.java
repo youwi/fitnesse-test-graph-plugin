@@ -20,7 +20,7 @@ import java.util.List;
  * fitnesse @sec.com
  * Created by yu on 2017/7/20.
  */
-public class testHistoryGraphResponder implements Responder{
+public class TestHistoryGraphResponder implements Responder{
   @Override
   public Response makeResponse(FitNesseContext context, Request request) throws Exception {
     SimpleResponse response = new SimpleResponse();

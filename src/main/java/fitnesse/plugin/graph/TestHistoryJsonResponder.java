@@ -20,7 +20,7 @@ import java.io.File;
  * fitnesse @sec.com
  * Created by yu on 2017/7/20.
  */
-public class testHistoryJsonResponder implements Responder{
+public class TestHistoryJsonResponder implements Responder{
   @Override
   public Response makeResponse(FitNesseContext context, Request request) throws Exception {
     //context
