@@ -42,6 +42,8 @@ public class TestHistoryCloneResponder implements Responder {
 
         try {
             WikiPage childPage = WikiPageUtil.addPage(rootPage, PathParser.parse(resource + "Clone"), data);
+            //.setProperties(page.getData().getProperties());
+            childPage.commit(page.getData());
             context.recentChanges.updateRecentChanges(childPage);
             response.setContent("{}");
         } catch (Exception e) {

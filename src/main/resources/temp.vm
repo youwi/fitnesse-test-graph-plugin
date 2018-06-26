@@ -1,0 +1,27 @@
+<style>
+
+    .m-button {
+        height: 18px;
+        line-height: 18px;
+        padding: 0px 10px;
+        margin-top: -3px;
+        visibility: hidden;
+    }
+    li:hover .m-button{
+        visibility: unset;
+    }
+
+</style>
+<script>
+    //$(".contents a")
+    //$("a.test")
+    $(".contents a.test|a.static").map((i, dom) => {
+        $(dom.parentNode).append("<button class='m-button' onclick=fitTestClone('" + dom.href + "')>clone</button>")
+    })
+
+    function fitTestClone(src) {
+        fetch(src + "?clone")
+                .then(r => r.json())
+                .then(json => location.reload())
+    }
+</script>
