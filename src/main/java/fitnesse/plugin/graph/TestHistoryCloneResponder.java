@@ -48,7 +48,7 @@ public class TestHistoryCloneResponder implements Responder {
             response.setContent("{}");
         } catch (Exception e) {
             e.printStackTrace();
-            response.setContent("{error:1}");
+            response.setContent("{error:1,msg:'"+e.getMessage()+"'}");
         }
 
         return response;
