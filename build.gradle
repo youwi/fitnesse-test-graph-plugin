@@ -25,3 +25,14 @@ task copyJarToLocalOpt(type: Copy) {
     from jar
     into '/opt/plugins/'
 }
+task sshToRemote(type:Exec){
+    executable 'sh'
+    args "-c","./ci.sh"
+}
+
+task run(type: JavaExec) {
+    dependsOn classes
+    classpath = sourceSets.main.runtimeClasspath
+    main "fitnesseMain.FitNesseMain"
+    args "-p", "8001", "-e", "0"
+}

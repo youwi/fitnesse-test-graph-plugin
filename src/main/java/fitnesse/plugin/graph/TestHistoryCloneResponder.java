@@ -34,13 +34,18 @@ public class TestHistoryCloneResponder implements Responder {
 
         SimpleResponse response = new SimpleResponse();
         response.setContentType("application/json;charset=utf-8");
-        String getData = rootPage.getData().getContent();
+        String resource = request.getResource();
+
+        WikiPagePath path = PathParser.parse(resource);
+        WikiPage page = context.getRootPage().getPageCrawler().getPage(path);
+        String data = page.getData().getContent();
 
         try {
-            WikiPage childPage = WikiPageUtil.addPage(rootPage, PathParser.parse(context.getRootPagePath()), getData);
+            WikiPage childPage = WikiPageUtil.addPage(rootPage, PathParser.parse(resource + "Clone"), data);
             context.recentChanges.updateRecentChanges(childPage);
             response.setContent("{}");
         } catch (Exception e) {
+            e.printStackTrace();
             response.setContent("{error:1}");
         }
 
