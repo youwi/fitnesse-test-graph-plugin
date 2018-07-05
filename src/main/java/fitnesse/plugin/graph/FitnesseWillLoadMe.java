@@ -11,61 +11,69 @@ import fitnesse.testsystems.slim.CustomComparatorRegistry;
 import fitnesse.testsystems.slim.tables.SlimTableFactory;
 import fitnesse.wiki.WikiPageFactoryRegistry;
 import fitnesse.wikitext.parser.SymbolProvider;
+import junit.framework.Test;
 
 /**
  * fitnesse @sec.com
  * Created by yu on 2017/7/20.
  * META-INF/services/fitnesse.plugins.PluginFeatureFactory
  */
-public class FitnesseWillLoadMe  implements PluginFeatureFactory {
+public class FitnesseWillLoadMe implements PluginFeatureFactory {
 
-  @Override
-  public Authenticator getAuthenticator() {
-    return null;
-  }
+    @Override
+    public Authenticator getAuthenticator() {
+        return null;
+    }
 
-  @Override
-  public ContentFilter getContentFilter() {
-    return null;
-  }
+    @Override
+    public ContentFilter getContentFilter() {
+        return null;
+    }
 
-  @Override
-  public void registerResponders(ResponderFactory responderFactory) throws PluginException {
-    System.out.println("-----fitnesse.plugin.graph loaded----");
-    responderFactory.addResponder("testHistoryJson",TestHistoryJsonResponder.class);
-    responderFactory.addResponder("testHistoryGraph",TestHistoryGraphResponder.class);
-    responderFactory.addResponder("clone",TestHistoryCloneResponder.class);
-  }
+    @Override
+    public void registerResponders(ResponderFactory responderFactory) throws PluginException {
+        System.out.println("-----fitnesse.plugin.graph loaded----");
+        responderFactory.addResponder("testHistoryJson", TestHistoryJsonResponder.class);
+        responderFactory.addResponder("testHistoryGraph", TestHistoryGraphResponder.class);
+        responderFactory.addResponder("editR", TestFitReactResponder.class);
+        responderFactory.addResponder("clone", TestHistoryCloneResponder.class);
+        responderFactory.addResponder("saveContent", TestSaveContentResponder.class);
+        responderFactory.addResponder("filesTagsJson", TestSaveContentResponder.class);
+        responderFactory.addResponder("includeTagsJson", TestSaveContentResponder.class);
+        responderFactory.addResponder("urlsTagsJson", TestSaveContentResponder.class);
+        responderFactory.addResponder("varsTagsJson", TestSaveContentResponder.class);
 
-  @Override
-  public void registerSymbolTypes(SymbolProvider symbolProvider) throws PluginException {
+    }
 
-  }
+    @Override
+    public void registerSymbolTypes(SymbolProvider symbolProvider) throws PluginException {
 
-  @Override
-  public void registerWikiPageFactories(WikiPageFactoryRegistry wikiPageFactoryRegistry) throws PluginException {
+    }
 
-  }
+    @Override
+    public void registerWikiPageFactories(WikiPageFactoryRegistry wikiPageFactoryRegistry) throws PluginException {
 
-  @Override
-  public void registerFormatters(FormatterRegistry registrar) throws PluginException {
+    }
 
-  }
+    @Override
+    public void registerFormatters(FormatterRegistry registrar) throws PluginException {
 
-  @Override
-  public void registerTestSystemFactories(TestSystemFactoryRegistry testSystemFactoryRegistry) throws PluginException {
+    }
 
-  }
+    @Override
+    public void registerTestSystemFactories(TestSystemFactoryRegistry testSystemFactoryRegistry) throws PluginException {
 
-  @Override
-  public void registerSlimTables(SlimTableFactory slimTableFactory) throws PluginException {
+    }
 
-  }
+    @Override
+    public void registerSlimTables(SlimTableFactory slimTableFactory) throws PluginException {
 
-  @Override
-  public void registerCustomComparators(CustomComparatorRegistry customComparatorRegistry) throws PluginException {
+    }
 
-  }
+    @Override
+    public void registerCustomComparators(CustomComparatorRegistry customComparatorRegistry) throws PluginException {
+
+    }
 
 
 }
