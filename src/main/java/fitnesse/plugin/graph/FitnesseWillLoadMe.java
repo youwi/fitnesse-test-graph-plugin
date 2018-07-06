@@ -42,6 +42,8 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         responderFactory.addResponder("includeTagsJson", TestSaveContentResponder.class);
         responderFactory.addResponder("urlsTagsJson", TestSaveContentResponder.class);
         responderFactory.addResponder("varsTagsJson", TestSaveContentResponder.class);
+        responderFactory.addResponder("testHtml", TestSaveContentResponder.class);
+
 
     }
 

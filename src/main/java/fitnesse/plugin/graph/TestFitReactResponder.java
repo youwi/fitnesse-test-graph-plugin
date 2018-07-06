@@ -37,14 +37,18 @@ public class TestFitReactResponder implements Responder {
         PageData pageData = page.getData();
 
 
-        HtmlPage html = context.pageFactory.newPage();
-        html.setTitle("Edit " + resource);
-        html.setPageTitle(new PageTitle("Editor", PathParser.parse(resource), pageData.getAttribute(PageData.PropertySUITES)));
+        HtmlPage html ;//= context.pageFactory.newPage();
+        html=  new HtmlPage( context.pageFactory.getVelocityEngine(), "nothingvm.vm", "bootstrap", context.contextRoot);
 
-        html.setNavTemplate("viewNav");
-        html.put("viewLocation", request.getResource());
+        html.setTitle("Edit " + resource);
+        html.setHeaderTemplate("nothingvm");//clear header
+
+        // html.setPageTitle(new PageTitle("Editor", PathParser.parse(resource), pageData.getAttribute(PageData.PropertySUITES)));
+
+        html.setNavTemplate("nothingvm");
+        //html.put("viewLocation", request.getResource());
         html.setMainTemplate("fitTable");
-        html.put("content",pageData.getContent());
+        html.put("content", pageData.getContent());
 
         response.setContent(html.html());
 
