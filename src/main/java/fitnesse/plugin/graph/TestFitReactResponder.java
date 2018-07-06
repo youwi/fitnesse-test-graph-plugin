@@ -3,13 +3,10 @@ package fitnesse.plugin.graph;
 import fitnesse.FitNesseContext;
 import fitnesse.Responder;
 import fitnesse.html.template.HtmlPage;
-import fitnesse.html.template.PageTitle;
 import fitnesse.http.Request;
 import fitnesse.http.Response;
 import fitnesse.http.SimpleResponse;
-import fitnesse.reporting.history.PageHistory;
 import fitnesse.wiki.*;
-import org.json.JSONObject;
 
 /**
  * fitnesse @sec.com
@@ -36,9 +33,8 @@ public class TestFitReactResponder implements Responder {
 
         PageData pageData = page.getData();
 
-
-        HtmlPage html ;//= context.pageFactory.newPage();
-        html=  new HtmlPage( context.pageFactory.getVelocityEngine(), "nothingvm.vm", "bootstrap", context.contextRoot);
+        HtmlPage html = new HtmlPage(context.pageFactory.getVelocityEngine(), "nothingvm.vm", "bootstrap", context.contextRoot);
+        //= context.pageFactory.newPage();
 
         html.setTitle("Edit " + resource);
         html.setHeaderTemplate("nothingvm");//clear header

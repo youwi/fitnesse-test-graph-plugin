@@ -8,7 +8,6 @@ import fitnesse.http.SimpleResponse;
 import fitnesse.reporting.history.PageHistory;
 import fitnesse.reporting.history.TestHistory;
 import fitnesse.wiki.*;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Collection;

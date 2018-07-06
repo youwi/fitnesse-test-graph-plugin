@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile group: 'org.fitnesse', name: 'fitnesse', version: '20161106'
+    compile group: 'org.fitnesse', name: 'fitnesse', version: '20180127'
 }
 
 task copyJarToParent(type: Copy) {
