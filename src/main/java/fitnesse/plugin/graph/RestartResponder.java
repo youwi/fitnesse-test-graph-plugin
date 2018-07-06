@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * pluginTestGraph
  * Created by yu on 2018/7/6.
  */
-public class TestRestartResponder implements Responder {
+public class RestartResponder implements Responder {
 
 
     public void restartApplication() {

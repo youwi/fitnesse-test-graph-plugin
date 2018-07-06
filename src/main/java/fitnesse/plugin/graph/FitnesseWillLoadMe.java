@@ -10,13 +10,11 @@ import fitnesse.responders.files.FileResponder;
 import fitnesse.testrunner.TestSystemFactoryRegistry;
 import fitnesse.testsystems.slim.CustomComparatorRegistry;
 import fitnesse.testsystems.slim.tables.SlimTableFactory;
-import fitnesse.util.Clock;
 import fitnesse.wiki.WikiPageFactoryRegistry;
 import fitnesse.wikitext.parser.SymbolProvider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Date;
 
 
 /**
@@ -43,15 +41,15 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         System.out.println("-----fitnesse.plugin.graph loaded----");
         responderFactory.addResponder("testHistoryJson", TestHistoryJsonResponder.class);
         responderFactory.addResponder("testHistoryGraph", TestHistoryGraphResponder.class);
-        responderFactory.addResponder("editR", TestFitReactResponder.class);
-        responderFactory.addResponder("clone", TestHistoryCloneResponder.class);
-        responderFactory.addResponder("saveContent", TestSaveContentResponder.class);
-        responderFactory.addResponder("filesTagsJson", TestSaveContentResponder.class);
-        responderFactory.addResponder("includeTagsJson", TestSaveContentResponder.class);
-        responderFactory.addResponder("urlsTagsJson", TestSaveContentResponder.class);
-        responderFactory.addResponder("varsTagsJson", TestSaveContentResponder.class);
-        responderFactory.addResponder("testHtml", TestSaveContentResponder.class);
-        responderFactory.addResponder("restart", TestRestartResponder.class);
+        responderFactory.addResponder("editR", FitTableVmResponder.class);
+        responderFactory.addResponder("clone", PageCloneResponder.class);
+        responderFactory.addResponder("saveContent", SaveContentResponder.class);
+        responderFactory.addResponder("filesTagsJson", FitTableFilesJsonResponder.class);
+      //  responderFactory.addResponder("includeTagsJson", SaveContentResponder.class);
+      //  responderFactory.addResponder("urlsTagsJson", SaveContentResponder.class);
+        responderFactory.addResponder("varsTagsJson", SaveContentResponder.class);
+        responderFactory.addResponder("testHtml", SaveContentResponder.class);
+        responderFactory.addResponder("restart", RestartResponder.class);
 
 
     }

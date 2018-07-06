@@ -12,7 +12,7 @@ import fitnesse.wiki.*;
  * fitnesse @sec.com
  * Created by yu on 2017/7/20.
  */
-public class TestFitReactResponder implements Responder {
+public class FitTableVmResponder implements Responder {
     /**
      * 使用react来编辑表格
      * 目前使用的是新的代码.

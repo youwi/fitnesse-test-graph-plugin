@@ -17,7 +17,7 @@ import java.util.List;
  * fitnesse @sec.com
  * Created by yu on 2017/7/20.
  */
-public class TestHistoryCloneResponder implements Responder {
+public class PageCloneResponder implements Responder {
     /**
      * simplie clone
      *
