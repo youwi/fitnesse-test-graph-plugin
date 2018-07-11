@@ -42,6 +42,9 @@ public class FitTableVmResponder implements Responder {
         // html.setPageTitle(new PageTitle("Editor", PathParser.parse(resource), pageData.getAttribute(PageData.PropertySUITES)));
 
         html.setNavTemplate("nothingvm");
+        if (java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0) {
+            html.put("debug", true);
+        }
         //html.put("viewLocation", request.getResource());
         html.setMainTemplate("fitTable");
         html.put("content", pageData.getContent());
