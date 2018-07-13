@@ -50,8 +50,6 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         responderFactory.addResponder("varsTagsJson", PageVarsResponder.class);
         responderFactory.addResponder("testHtml", SaveContentResponder.class);
         responderFactory.addResponder("restart", RestartResponder.class);
-
-
     }
 
     /**

@@ -6,6 +6,7 @@ import fitnesse.components.TraversalListener;
 import fitnesse.http.Request;
 import fitnesse.http.Response;
 import fitnesse.http.SimpleResponse;
+import fitnesse.wiki.SymbolicPage;
 import fitnesse.wiki.WikiPage;
 import fitnesse.wiki.WikiPagePath;
 import fitnesse.wiki.fs.FileSystemPage;
@@ -58,13 +59,16 @@ public class FitTableFilesJsonResponder implements Responder {
                 return;
             }
         }
-
+        if(page instanceof SymbolicPage){
+            return ;
+        }
         listener.process(page);
         for (WikiPage wikiPage : page.getChildren()) {
             traverse(wikiPage, listener);
         }
     }
 
+    static Thread runningThread=null;
 
     @Override
     public Response makeResponse(FitNesseContext context, Request request) throws Exception {
@@ -73,7 +77,10 @@ public class FitTableFilesJsonResponder implements Responder {
         List arr;
         if (LAST_TIME_SPEND > 200) {
             arr = CACHED;
-            new UpdateTaskThread(context.getRootPage()).start();
+            if(runningThread==null || !runningThread.isAlive()){
+                runningThread=new UpdateTaskThread(context.getRootPage());
+                runningThread.start();
+            }
         } else {
             long stime = System.currentTimeMillis();
             arr = collectPageNames(context.getRootPage(), context.getRootPage());

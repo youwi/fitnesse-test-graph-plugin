@@ -45,9 +45,7 @@ public class PageVarsResponder implements Responder {
 
         WikiPagePath path = PathParser.parse(resource);
         WikiPage page = context.getRootPage().getPageCrawler().getPage(path);
-        String data = page.getData().getContent();
         Map<String, Object> out = new HashMap();
-        //out.put("__OVER_LOADS__");
         List<Map> hisCache = new ArrayList();
         List<Map> overLoads = new ArrayList();
         try {
@@ -68,9 +66,8 @@ public class PageVarsResponder implements Responder {
                     ParsingPage.Cache cacheObj = (ParsingPage.Cache) getField(pp, "cache");
                     Map map = (Map) getField(cacheObj, "cache");
                     hisCache.add(map);
-                    page = page.getParent();
                 }
-
+                page = page.getParent();
             }
             //后入先出
             Collections.reverse(hisCache);
