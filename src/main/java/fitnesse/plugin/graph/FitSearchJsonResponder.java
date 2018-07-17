@@ -10,16 +10,25 @@ import fitnesse.wiki.SymbolicPage;
 import fitnesse.wiki.WikiPage;
 import fitnesse.wiki.WikiPagePath;
 import fitnesse.wiki.fs.FileSystemPage;
+import fitnesse.wiki.search.RegularExpressionWikiPageFinder;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static fitnesse.plugin.graph.FitTableFilesJsonResponder.traverse;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.LITERAL;
 
 /**
  * pluginTestGraph
  * Created by yu on 2018/7/6.
  */
-public class FitTableFilesJsonResponder implements Responder {
+public class FitSearchJsonResponder implements Responder {
 
     /**
      * link  to fitnesse.responders.refactoring.RefactorPageResponder
@@ -30,21 +39,26 @@ public class FitTableFilesJsonResponder implements Responder {
      * @param
      * @return
      */
-    static List<String> CACHED;
+    static Map<String, List> CACHED = new HashMap();
     static long LAST_TIME_SPEND = 0;
 
-    List<String> collectPageNames(final WikiPage thisPage, WikiPage rootPage) {
+    List<String> searchPageNamesContents(final WikiPage thisPage, String searchString) {
         final List<String> pageNames = new ArrayList<>();
         if (thisPage != null) {
-            final WikiPagePath thisPagePath = thisPage.getPageCrawler().getFullPath();
-            traverse(rootPage, new TraversalListener<WikiPage>() {
+            Pattern regularExpression = Pattern.compile(searchString, CASE_INSENSITIVE + LITERAL);
 
+            traverse(thisPage, new TraversalListener<WikiPage>() {
                 @Override
                 public void process(WikiPage page) {
+                    String pageContent = page.getData().getContent();
                     WikiPagePath pagePath = page.getPageCrawler().getFullPath();
                     pagePath.makeAbsolute();
-                    if (!thisPagePath.equals(pagePath) && !pagePath.isEmpty()) {
-                        pageNames.add(pagePath.toString());
+                    String pageName = pagePath.toString();
+                    Matcher matcher = regularExpression.matcher(pageContent);
+                    if (regularExpression.matcher(pageName).find()) {
+                        pageNames.add(pageName);
+                    } else if (matcher.find()) {
+                        pageNames.add(pageName);
                     }
                 }
             });
@@ -52,42 +66,29 @@ public class FitTableFilesJsonResponder implements Responder {
         return pageNames;
     }
 
-    public static void traverse(WikiPage page, TraversalListener<? super WikiPage> listener) {
-        if (page instanceof FileSystemPage) {
-            String filename = ((FileSystemPage) page).getFileSystemPath().getPath();
-            if (filename.contains("FitNesseRoot/FitNesse")) {
-                return;
-            }
-        }
-        if(page instanceof SymbolicPage){
-            return ;
-        }
-        listener.process(page);
-        for (WikiPage wikiPage : page.getChildren()) {
-            traverse(wikiPage, listener);
-        }
-    }
 
-    static Thread runningThread=null;
+    static Thread runningThread = null;
 
     @Override
     public Response makeResponse(FitNesseContext context, Request request) throws Exception {
         SimpleResponse response = new SimpleResponse();
         response.setContentType("application/json;charset=utf-8");
+        String searchString = request.getInput("searchString");
+        String key = request.getResource() + ":" + searchString;
         List arr;
         if (LAST_TIME_SPEND > 200) {
-            arr = CACHED;
-            if(runningThread==null || !runningThread.isAlive()){
-                runningThread=new UpdateTaskThread(context.getRootPage());
+            arr = CACHED.get(key);
+            if (runningThread == null || !runningThread.isAlive()) {
+                runningThread = new UpdateTaskThread(context.getRootPage(), searchString, key);
                 runningThread.start();
             }
         } else {
             long stime = System.currentTimeMillis();
-            arr = collectPageNames(context.getRootPage(), context.getRootPage());
+            arr = searchPageNamesContents(context.getRootPage(), searchString);
             long etime = System.currentTimeMillis();
 
             LAST_TIME_SPEND = etime - stime;
-            CACHED = arr;
+            CACHED.put(key, arr);
         }
 
         JSONArray jsonArray = new JSONArray(arr);
@@ -100,14 +101,18 @@ public class FitTableFilesJsonResponder implements Responder {
      */
     class UpdateTaskThread extends Thread {
         WikiPage root;
+        String searchString;
+        String cacheKey;
 
-        UpdateTaskThread(WikiPage root) {
+        UpdateTaskThread(WikiPage root, String searchString, String cacheKey) {
             this.root = root;
+            this.searchString = searchString;
+            this.cacheKey = cacheKey;
         }
 
         @Override
         public void run() {
-            CACHED = collectPageNames(root, root);
+            CACHED.put(cacheKey, searchPageNamesContents(root, searchString));
         }
     }
 }
