@@ -1,6 +1,7 @@
 package fitnesse.plugin.graph;
 
 import fitnesse.authentication.Authenticator;
+import fitnesse.components.TraversalListener;
 import fitnesse.plugins.PluginException;
 import fitnesse.plugins.PluginFeatureFactory;
 import fitnesse.reporting.FormatterRegistry;
@@ -10,7 +11,10 @@ import fitnesse.responders.files.FileResponder;
 import fitnesse.testrunner.TestSystemFactoryRegistry;
 import fitnesse.testsystems.slim.CustomComparatorRegistry;
 import fitnesse.testsystems.slim.tables.SlimTableFactory;
+import fitnesse.wiki.SymbolicPage;
+import fitnesse.wiki.WikiPage;
 import fitnesse.wiki.WikiPageFactoryRegistry;
+import fitnesse.wiki.fs.FileSystemPage;
 import fitnesse.wikitext.parser.SymbolProvider;
 
 import java.lang.reflect.Field;
@@ -45,13 +49,30 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         responderFactory.addResponder("clone", PageCloneResponder.class);
         responderFactory.addResponder("saveContent", SaveContentResponder.class);
         responderFactory.addResponder("filesTagsJson", FitTableFilesJsonResponder.class);
-      //  responderFactory.addResponder("includeTagsJson", SaveContentResponder.class);
-      //  responderFactory.addResponder("urlsTagsJson", SaveContentResponder.class);
+        // responderFactory.addResponder("includeTagsJson", SaveContentResponder.class);
+        // responderFactory.addResponder("urlsTagsJson", SaveContentResponder.class);
         responderFactory.addResponder("varsTagsJson", PageVarsResponder.class);
         responderFactory.addResponder("testHtml", SaveContentResponder.class);
         responderFactory.addResponder("restart", RestartResponder.class);
         responderFactory.addResponder("searchAsJson", FitSearchJsonResponder.class);
+        responderFactory.addResponder("pageHelpJson", PageHelpInfoJsonApi.class);
 
+
+    }
+    public static void traverseAllPage(WikiPage page, TraversalListener<? super WikiPage> listener) {
+        if (page instanceof FileSystemPage) {
+            String filename = ((FileSystemPage) page).getFileSystemPath().getPath();
+            if (filename.contains("FitNesseRoot/FitNesse")) {
+                return;
+            }
+        }
+        if(page instanceof SymbolicPage){
+            return ;
+        }
+        listener.process(page);
+        for (WikiPage wikiPage : page.getChildren()) {
+            traverseAllPage(wikiPage, listener);
+        }
     }
 
     /**

@@ -6,11 +6,8 @@ import fitnesse.components.TraversalListener;
 import fitnesse.http.Request;
 import fitnesse.http.Response;
 import fitnesse.http.SimpleResponse;
-import fitnesse.wiki.SymbolicPage;
 import fitnesse.wiki.WikiPage;
 import fitnesse.wiki.WikiPagePath;
-import fitnesse.wiki.fs.FileSystemPage;
-import fitnesse.wiki.search.RegularExpressionWikiPageFinder;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -20,7 +17,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static fitnesse.plugin.graph.FitTableFilesJsonResponder.traverse;
+import static fitnesse.plugin.graph.FitnesseWillLoadMe.traverseAllPage;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.LITERAL;
 
@@ -47,7 +44,7 @@ public class FitSearchJsonResponder implements Responder {
         if (thisPage != null) {
             Pattern regularExpression = Pattern.compile(searchString, CASE_INSENSITIVE + LITERAL);
 
-            traverse(thisPage, new TraversalListener<WikiPage>() {
+            traverseAllPage(thisPage, new TraversalListener<WikiPage>() {
                 @Override
                 public void process(WikiPage page) {
                     String pageContent = page.getData().getContent();
@@ -76,10 +73,15 @@ public class FitSearchJsonResponder implements Responder {
         String searchString = request.getInput("searchString");
         String key = request.getResource() + ":" + searchString;
         List arr;
-        if (LAST_TIME_SPEND > 200) {
+        if (CACHED.get(key)!=null){
             arr = CACHED.get(key);
             if (runningThread == null || !runningThread.isAlive()) {
-                runningThread = new UpdateTaskThread(context.getRootPage(), searchString, key);
+                runningThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        CACHED.put(key, searchPageNamesContents(context.getRootPage(), searchString));
+                    }
+                });
                 runningThread.start();
             }
         } else {
@@ -96,23 +98,4 @@ public class FitSearchJsonResponder implements Responder {
         return response;
     }
 
-    /**
-     * thread update cache.
-     */
-    class UpdateTaskThread extends Thread {
-        WikiPage root;
-        String searchString;
-        String cacheKey;
-
-        UpdateTaskThread(WikiPage root, String searchString, String cacheKey) {
-            this.root = root;
-            this.searchString = searchString;
-            this.cacheKey = cacheKey;
-        }
-
-        @Override
-        public void run() {
-            CACHED.put(cacheKey, searchPageNamesContents(root, searchString));
-        }
-    }
 }

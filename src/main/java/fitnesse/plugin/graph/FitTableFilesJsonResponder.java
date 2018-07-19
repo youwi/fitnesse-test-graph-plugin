@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 import java.util.List;
 
+import static fitnesse.plugin.graph.FitnesseWillLoadMe.traverseAllPage;
+
 /**
  * pluginTestGraph
  * Created by yu on 2018/7/6.
@@ -37,7 +39,7 @@ public class FitTableFilesJsonResponder implements Responder {
         final List<String> pageNames = new ArrayList<>();
         if (thisPage != null) {
             final WikiPagePath thisPagePath = thisPage.getPageCrawler().getFullPath();
-            traverse(rootPage, new TraversalListener<WikiPage>() {
+            traverseAllPage(rootPage, new TraversalListener<WikiPage>() {
 
                 @Override
                 public void process(WikiPage page) {
@@ -52,21 +54,7 @@ public class FitTableFilesJsonResponder implements Responder {
         return pageNames;
     }
 
-    public static void traverse(WikiPage page, TraversalListener<? super WikiPage> listener) {
-        if (page instanceof FileSystemPage) {
-            String filename = ((FileSystemPage) page).getFileSystemPath().getPath();
-            if (filename.contains("FitNesseRoot/FitNesse")) {
-                return;
-            }
-        }
-        if(page instanceof SymbolicPage){
-            return ;
-        }
-        listener.process(page);
-        for (WikiPage wikiPage : page.getChildren()) {
-            traverse(wikiPage, listener);
-        }
-    }
+
 
     static Thread runningThread=null;
 
@@ -78,7 +66,12 @@ public class FitTableFilesJsonResponder implements Responder {
         if (LAST_TIME_SPEND > 200) {
             arr = CACHED;
             if(runningThread==null || !runningThread.isAlive()){
-                runningThread=new UpdateTaskThread(context.getRootPage());
+                runningThread=new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        CACHED = collectPageNames(context.getRootPage(), context.getRootPage());
+                    }
+                });
                 runningThread.start();
             }
         } else {
@@ -95,19 +88,5 @@ public class FitTableFilesJsonResponder implements Responder {
         return response;
     }
 
-    /**
-     * thread update cache.
-     */
-    class UpdateTaskThread extends Thread {
-        WikiPage root;
 
-        UpdateTaskThread(WikiPage root) {
-            this.root = root;
-        }
-
-        @Override
-        public void run() {
-            CACHED = collectPageNames(root, root);
-        }
-    }
 }
