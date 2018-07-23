@@ -1,4 +1,4 @@
-package fitnesse.plugin.graph;
+package fitnesse.util;
 
 import fitnesse.FitNesseContext;
 import fitnesse.reporting.history.InvalidReportException;

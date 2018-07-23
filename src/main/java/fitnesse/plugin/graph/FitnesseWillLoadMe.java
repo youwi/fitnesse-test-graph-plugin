@@ -45,6 +45,8 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         System.out.println("-----fitnesse.plugin.graph loaded----");
         responderFactory.addResponder("testHistoryJson", TestHistoryJsonResponder.class);
         responderFactory.addResponder("testHistoryGraph", TestHistoryGraphResponder.class);
+        responderFactory.addResponder("testHistoryJunit", TestHistoryJunitResponder.class);
+
         responderFactory.addResponder("editR", FitTableVmResponder.class);
         responderFactory.addResponder("clone", PageCloneResponder.class);
         responderFactory.addResponder("saveContent", SaveContentResponder.class);
