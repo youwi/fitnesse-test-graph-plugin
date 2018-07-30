@@ -15,7 +15,10 @@ import fitnesse.wiki.SymbolicPage;
 import fitnesse.wiki.WikiPage;
 import fitnesse.wiki.WikiPageFactoryRegistry;
 import fitnesse.wiki.fs.FileSystemPage;
+import fitnesse.wikitext.parser.Symbol;
 import fitnesse.wikitext.parser.SymbolProvider;
+import fitnesse.wikitext.parser.SymbolType;
+import fitnesse.wikitext.parser.Translator;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -115,7 +118,7 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
 
     @Override
     public void registerSymbolTypes(SymbolProvider symbolProvider) throws PluginException {
-
+        symbolProvider.add(new PageContentsNormalNameSymbolType());
     }
 
     @Override
