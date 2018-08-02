@@ -13,6 +13,8 @@ import static fitnesse.util.BeanUtil.getObjectByPath;
 
 /**
  * pluginTestGraph
+ * contentx 支持这个语法.
+ * 目前可以让HelpText优先显示.
  * Created by yu on 2018/7/27.
  */
 public class PageContentsNormalNameSymbolType extends SymbolType implements Rule, Translation {
