@@ -58,6 +58,9 @@ public class PageCinContentsItemBuilder  extends ContentsItemBuilder {
 
     public HtmlTag buildItem(SourcePage page) {
         String help = page.getProperty(PageData.PropertyHELP);
+        if(help.isEmpty()){
+            help="...";
+        }
         HtmlTag listItem = new HtmlTag("li");
         HtmlTag link = new HtmlTag("a", help);
         link.addAttribute("href", page.getFullName());

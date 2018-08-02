@@ -45,7 +45,7 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
     public void registerResponders(ResponderFactory responderFactory) throws PluginException {
         //resetFileResponderLimit();
         responderFactory.addResponder("files", FileResponder.class);
-        System.out.println("-----fitnesse.plugin.graph loaded----");
+        System.out.println("-----fitnesse.plugin.graph loaded---ing-");
         responderFactory.addResponder("testHistoryJson", TestHistoryJsonResponder.class);
         responderFactory.addResponder("testHistoryGraph", TestHistoryGraphResponder.class);
         responderFactory.addResponder("testHistoryJunit", TestHistoryJunitResponder.class);
@@ -54,16 +54,16 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         responderFactory.addResponder("clone", PageCloneResponder.class);
         responderFactory.addResponder("saveContent", SaveContentResponder.class);
         responderFactory.addResponder("filesTagsJson", FitTableFilesJsonResponder.class);
-        // responderFactory.addResponder("includeTagsJson", SaveContentResponder.class);
-        // responderFactory.addResponder("urlsTagsJson", SaveContentResponder.class);
         responderFactory.addResponder("varsTagsJson", PageVarsResponder.class);
         responderFactory.addResponder("testHtml", SaveContentResponder.class);
         responderFactory.addResponder("restart", RestartResponder.class);
         responderFactory.addResponder("searchAsJson", FitSearchJsonResponder.class);
         responderFactory.addResponder("pageHelpJson", PageHelpInfoJsonApi.class);
+        responderFactory.addResponder("saveContentPosition", SaveByPosResponder.class);
 
-
+        System.out.println("-----fitnesse.plugin.graph loaded-- ok --");
     }
+
     public static void traverseAllPage(WikiPage page, TraversalListener<? super WikiPage> listener) {
         if (page instanceof FileSystemPage) {
             String filename = ((FileSystemPage) page).getFileSystemPath().getPath();
@@ -71,8 +71,8 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
                 return;
             }
         }
-        if(page instanceof SymbolicPage){
-            return ;
+        if (page instanceof SymbolicPage) {
+            return;
         }
         listener.process(page);
         for (WikiPage wikiPage : page.getChildren()) {
