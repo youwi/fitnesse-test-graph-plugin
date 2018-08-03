@@ -60,6 +60,8 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         responderFactory.addResponder("searchAsJson", FitSearchJsonResponder.class);
         responderFactory.addResponder("pageHelpJson", PageHelpInfoJsonApi.class);
         responderFactory.addResponder("saveContentPosition", SaveByPosResponder.class);
+        responderFactory.addResponder("testNow", TestWithContentResponder.class);
+
 
         System.out.println("-----fitnesse.plugin.graph loaded-- ok --");
     }

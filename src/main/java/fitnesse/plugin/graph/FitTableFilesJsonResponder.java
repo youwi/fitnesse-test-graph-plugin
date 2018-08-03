@@ -80,6 +80,7 @@ public class FitTableFilesJsonResponder implements Responder {
             long etime = System.currentTimeMillis();
 
             LAST_TIME_SPEND = etime - stime;
+            System.out.println("last Thread time spend:  "+LAST_TIME_SPEND);
             CACHED = arr;
         }
 
