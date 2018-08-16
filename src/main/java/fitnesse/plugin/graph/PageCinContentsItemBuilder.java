@@ -5,6 +5,7 @@ import fitnesse.html.HtmlUtil;
 import fitnesse.wiki.PageData;
 import fitnesse.wiki.PageType;
 import fitnesse.wiki.WikiImportProperty;
+
 import fitnesse.wikitext.parser.*;
 import util.GracefulNamer;
 
@@ -51,7 +52,7 @@ public class PageCinContentsItemBuilder  extends ContentsItemBuilder {
     }
 
     private Collection<SourcePage> getSortedChildren(SourcePage parent) {
-        ArrayList<SourcePage> result = new ArrayList<>(parent.getChildren());
+        ArrayList<SourcePage> result = new ArrayList(parent.getChildren());
         Collections.sort(result);
         return result;
     }

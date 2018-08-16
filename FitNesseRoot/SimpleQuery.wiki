@@ -1,0 +1,76 @@
+---
+Help: 帮助信息要带上
+Suite
+WikiImport
+  AutoUpdate: null
+  IsRoot: null
+  Source: http://127.0.0.1:8001/FrontPage.SimpleQuery
+---
+!contents -R5 -g -p -f -h
+ 
+ss
+account.id_card 222
+为了测试方便 把身份证号改了我自己的号
+猎头1-自动化测试的身份证号为:420528198911115449  500234199012087013
+参数已经发改了,现在返回 userId 206038 
+  
+!|Import                  |
+|fit.decorator            |
+|fit.decorator.performance|
+|eg                       |
+
+!|Division                       |
+|numerator|denominator|quotient()|
+|10       |2          |5         |
+|12.6     |3          |4.2       |
+|100      |4          |25        |
+
+使用数据库中已经有的4个身份证号:
+|POST     |${url}                                         |
+|set Param|idCard        |             |500234199012087013|
+|get      |                                               |
+|check    |json Structure|code,msg,body|true              |
+|param    |id            |1                               |
+|body                                                     |{{{ java Script
+java Script
+java Scripte
+java Script
+java Script
+java Scriptjava Scriptjava Script
+java Script
+java Script
+java Script
+java Script }}}|
+
+0|check    |java Script   |response.body==true|true              |
+
+accountId是一个无用参数....
+|script   |Connect Server|${url}                            |
+|set Param|idCard        |               |500234199012087013|
+|set Param|accountId     |               |1                 |
+|set Body |{}                                               |
+|get                                                        |
+|check    |json Structure|code,msg,body  |true              |
+|check    |java Script   |response.body>0|true              |
+0|check    |java Script   |response.body==true|true              |
+
+
+accountId是一个无用参数....
+|script   |Connect Server|${url}                            |
+|set Param|idCard        |               |433130199005033723|
+|set Param|accountId     |               |1                 |
+|set Body |{}                                               |
+|get                                                        |
+|check    |json Structure|code,msg,body  |true              |
+|check    |java Script   |response.body>0|true              |
+ 
+accountId是一个无用参数....
+|script   |Connect Server|${url}                            |
+|set Param|idCard        |               |431121199006176932|
+|set Param|accountId     |               |1                 |
+|set Body |{}                                               |
+|get                                                        |
+|check    |json Structure|code,msg,body  |true              |
+|check    |java Script   |response.body>0|true              |
+ 
+ 

@@ -36,7 +36,7 @@ public class FitTableFilesJsonResponder implements Responder {
     static long LAST_TIME_SPEND = 0;
 
     List<String> collectPageNames(final WikiPage thisPage, WikiPage rootPage) {
-        final List<String> pageNames = new ArrayList<>();
+        final List<String> pageNames = new ArrayList();
         if (thisPage != null) {
             final WikiPagePath thisPagePath = thisPage.getPageCrawler().getFullPath();
             traverseAllPage(rootPage, new TraversalListener<WikiPage>() {

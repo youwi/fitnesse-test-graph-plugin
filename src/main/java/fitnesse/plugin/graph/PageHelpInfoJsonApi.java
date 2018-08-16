@@ -28,7 +28,7 @@ public class PageHelpInfoJsonApi implements Responder {
     static Map CACHE = new HashMap();
 
     List<String> collectPageHelpInfo(WikiPage rootPage) {
-        final List<String> pageNames = new ArrayList<>();
+        final List<String> pageNames = new ArrayList();
         if (rootPage != null) {
             traverseAllPage(rootPage, new TraversalListener<WikiPage>() {
                 @Override

@@ -10,11 +10,14 @@ import fitnesse.http.Response;
 import fitnesse.http.SimpleResponse;
 import fitnesse.reporting.history.PageHistory;
 import fitnesse.reporting.history.TestHistory;
+import fitnesse.util.JSONObjectEx;
 import fitnesse.wiki.PathParser;
 import fitnesse.wiki.WikiPage;
 import org.json.JSONObject;
 
 import java.io.File;
+
+import static fitnesse.util.BeanUtil.objectToJson;
 
 /**
  * fitnesse @sec.com
@@ -39,10 +42,11 @@ public class TestHistoryJsonResponder implements Responder{
     if(pageHistory==null){
       response.setContent("{}");
     }else{
-      JSONObject jsonObject = new JSONObject(pageHistory);
-      response.setContent(  jsonObject.toString());
+      response.setContent( objectToJson(pageHistory));
     }
 
     return response;
   }
+
+
 }

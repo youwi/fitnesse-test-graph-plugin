@@ -40,7 +40,7 @@ public class FitSearchJsonResponder implements Responder {
   static long LAST_TIME_SPEND = 0;
 
   List<String> searchPageNamesContents(final WikiPage thisPage, String searchString) {
-    final List<String> pageNames = new ArrayList<>();
+    final List<String> pageNames = new ArrayList();
     if (thisPage != null) {
       Pattern regularExpression = Pattern.compile(searchString, CASE_INSENSITIVE + LITERAL);
 

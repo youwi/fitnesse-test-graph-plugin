@@ -32,7 +32,7 @@ public class PageContentsNormalNameSymbolType extends SymbolType implements Rule
       current.add(option);
     }
 
-    return new Maybe<>(current);
+    return new Maybe(current);
   }
 
   @Override
