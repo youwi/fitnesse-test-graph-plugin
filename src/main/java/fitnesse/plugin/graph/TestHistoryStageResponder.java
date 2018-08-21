@@ -11,6 +11,7 @@ import fitnesse.reporting.history.SuiteExecutionReport;
 import fitnesse.reporting.history.TestHistory;
 import fitnesse.wiki.WikiPage;
 import org.json.JSONObject;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import util.FileUtil;
 
 import java.io.File;
@@ -28,6 +29,10 @@ import static fitnesse.util.BeanUtil.objectToJson;
  */
 public class TestHistoryStageResponder implements Responder {
   static Map<String, Integer> CACHE_KV = new HashMap();
+  static Map<String, String> CACHE_USER = new HashMap();
+  static long LAST_RUN_FULL = System.currentTimeMillis();
+  static long LAST_RUN = System.currentTimeMillis();
+
   static Thread runningThread;
 
   @Override
@@ -42,6 +47,14 @@ public class TestHistoryStageResponder implements Responder {
         @Override
         public void run() {
           try {
+            if (System.currentTimeMillis() - LAST_RUN < 60 * 1000 && CACHE_KV.size() != 0) {
+              return;
+            }
+            boolean fullRun = false;
+            if (System.currentTimeMillis() - LAST_RUN_FULL > 24 * 60 * 60 * 1000) {
+              LAST_RUN_FULL = System.currentTimeMillis();
+              fullRun = true;
+            }
 
             ExecutionReport report = getFirstReportByPath(context, request.getResource());
 
@@ -49,9 +62,13 @@ public class TestHistoryStageResponder implements Responder {
               for (SuiteExecutionReport.PageHistoryReference s : ((SuiteExecutionReport) report).getPageHistoryReferences()) {
                 Integer lastWrong = s.getTestSummary().getWrong();
                 String name = s.getPageName();
+                if (lastWrong <= 0 && !fullRun) {
+                  continue;
+                }
                 CACHE_KV.put(name, lastWrong);
                 ExecutionReport reportCase = getFirstReportByPath(context, name);
                 CACHE_KV.put(name, reportCase.getFinalCounts().getWrong());
+
               }
             }
           } catch (Exception e) {

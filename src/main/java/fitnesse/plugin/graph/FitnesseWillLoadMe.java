@@ -51,7 +51,6 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         responderFactory.addResponder("testHistoryJunit", TestHistoryJunitResponder.class);
         responderFactory.addResponder("testHistoryStage", TestHistoryStageResponder.class);
 
-
         responderFactory.addResponder("editR", FitTableVmResponder.class);
         responderFactory.addResponder("clone", PageCloneResponder.class);
         responderFactory.addResponder("saveContent", SaveContentResponder.class);
