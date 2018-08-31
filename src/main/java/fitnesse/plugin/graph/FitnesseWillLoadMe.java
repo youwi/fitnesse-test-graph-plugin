@@ -13,13 +13,12 @@ import fitnesse.testsystems.slim.CustomComparatorRegistry;
 import fitnesse.testsystems.slim.tables.SlimTableFactory;
 import fitnesse.wiki.SymbolicPage;
 import fitnesse.wiki.WikiPage;
+import fitnesse.wiki.WikiPageFactory;
 import fitnesse.wiki.WikiPageFactoryRegistry;
 import fitnesse.wiki.fs.FileSystemPage;
-import fitnesse.wikitext.parser.Symbol;
-import fitnesse.wikitext.parser.SymbolProvider;
-import fitnesse.wikitext.parser.SymbolType;
-import fitnesse.wikitext.parser.Translator;
+import fitnesse.wikitext.parser.*;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -62,6 +61,9 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         responderFactory.addResponder("pageHelpJson", PageHelpInfoJsonApi.class);
         responderFactory.addResponder("saveContentPosition", SaveByPosResponder.class);
         responderFactory.addResponder("testNow", TestWithContentResponder.class);
+
+        responderFactory.addResponder("proxy/", PageByHttpProxyResponder.class);
+        responderFactory.addResponder("api/", PageByHttpProxyResponder.class);
 
 
         System.out.println("-----fitnesse.plugin.graph loaded-- ok --");
@@ -126,7 +128,7 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
 
     @Override
     public void registerWikiPageFactories(WikiPageFactoryRegistry wikiPageFactoryRegistry) throws PluginException {
-
+        wikiPageFactoryRegistry.registerWikiPageFactory(new PageByHttpProxyConvert());
     }
 
     @Override

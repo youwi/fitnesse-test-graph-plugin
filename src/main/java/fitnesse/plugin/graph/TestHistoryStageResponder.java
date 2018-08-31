@@ -80,6 +80,9 @@ public class TestHistoryStageResponder implements Responder {
     }
 
     Map out = new HashMap();
+    if (CACHE_KV.size() == 0) {
+      response.setContent("{}");
+    }
     for (Object key : CACHE_KV.keySet()) {
       if (CACHE_KV.get(key) > 0) {
         out.put(key, CACHE_KV.get(key));

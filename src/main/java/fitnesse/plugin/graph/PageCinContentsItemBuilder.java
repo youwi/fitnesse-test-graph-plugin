@@ -6,6 +6,7 @@ import fitnesse.wiki.PageData;
 import fitnesse.wiki.PageType;
 import fitnesse.wiki.WikiImportProperty;
 
+import fitnesse.wiki.WikiSourcePage;
 import fitnesse.wikitext.parser.*;
 import util.GracefulNamer;
 
