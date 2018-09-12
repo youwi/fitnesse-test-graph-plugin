@@ -14,7 +14,7 @@ import java.util.Map;
  * fitnesse @sec.com
  * Created by yu on 2017/7/20.
  */
-public class VirtualWikiPage implements WikiPage  {
+public class VirtualWikiPage implements WikiPage {
 
   @Override
   public WikiPage getParent() {
@@ -63,7 +63,7 @@ public class VirtualWikiPage implements WikiPage  {
 
   @Override
   public PageData getData() {
-    return new PageData("Handle By Proxy. this Page can to be edit.",new WikiPageProperty());
+    return new PageData("Handle By Proxy. this Page can to be edit.", new WikiPageProperty());
   }
 
   @Override
@@ -88,7 +88,7 @@ public class VirtualWikiPage implements WikiPage  {
 
   @Override
   public PageCrawler getPageCrawler() {
-    return new PageCrawler(null) {
+    return new PageCrawler( null) {
       @Override
       public WikiPage getPage(WikiPagePath path) {
         return null;
@@ -123,7 +123,6 @@ public class VirtualWikiPage implements WikiPage  {
       public WikiPage getRoot() {
         return null;
       }
-
 
       @Override
       public void traversePageAndAncestors(TraversalListener<? super WikiPage> callback) {

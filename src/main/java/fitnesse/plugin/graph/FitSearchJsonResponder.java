@@ -42,7 +42,7 @@ public class FitSearchJsonResponder implements Responder {
   List<String> searchPageNamesContents(final WikiPage thisPage, String searchString) {
     final List<String> pageNames = new ArrayList();
     if (thisPage != null) {
-      Pattern regularExpression = Pattern.compile(searchString, CASE_INSENSITIVE + LITERAL);
+      final Pattern regularExpression = Pattern.compile(searchString, CASE_INSENSITIVE + LITERAL);
 
       traverseAllPage(thisPage, new TraversalListener<WikiPage>() {
         @Override
@@ -67,11 +67,11 @@ public class FitSearchJsonResponder implements Responder {
   static Thread runningThread = null;
 
   @Override
-  public Response makeResponse(FitNesseContext context, Request request) throws Exception {
+  public Response makeResponse(final FitNesseContext context, Request request) throws Exception {
     SimpleResponse response = new SimpleResponse();
     response.setContentType("application/json;charset=utf-8");
-    String searchString = request.getInput("searchString");
-    String key = request.getResource() + ":" + searchString;
+    final String searchString = request.getInput("searchString");
+    final String key = request.getResource() + ":" + searchString;
     List arr;
     if (CACHED.get(key) != null) {
       arr = CACHED.get(key);

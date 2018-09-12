@@ -44,7 +44,7 @@ public class PageHelpInfoJsonApi implements Responder {
     static Thread running;
 
     @Override
-    public Response makeResponse(FitNesseContext context, Request request) throws Exception {
+    public Response makeResponse(final FitNesseContext context, Request request) throws Exception {
         SimpleResponse response = new SimpleResponse();
         response.setContentType("application/json;charset=utf-8");
         //只有一个线程,不考虑冲突和其它异常.

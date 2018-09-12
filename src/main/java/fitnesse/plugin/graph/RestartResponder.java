@@ -27,7 +27,7 @@ import java.util.logging.Level;
 public class RestartResponder implements Responder {
 
 
-  public String restartApplication(FitNesseContext context) {
+  public String restartApplication(final FitNesseContext context) {
     final String javaBin = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
     final File currentJar;
     try {

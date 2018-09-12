@@ -55,7 +55,7 @@ public class SaveByPosResponderTest {
 
     System.out.println(out);
     System.out.println(Computeclass.SimilarDegree(ori, out));
-    assert ori.equals(out);
+    assert ori.trim().equals(out.trim());
 
   }
 

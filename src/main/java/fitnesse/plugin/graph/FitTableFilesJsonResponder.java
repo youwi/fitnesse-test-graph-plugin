@@ -59,9 +59,10 @@ public class FitTableFilesJsonResponder implements Responder {
     static Thread runningThread=null;
 
     @Override
-    public Response makeResponse(FitNesseContext context, Request request) throws Exception {
+    public Response makeResponse(final FitNesseContext context, Request request) throws Exception {
         SimpleResponse response = new SimpleResponse();
         response.setContentType("application/json;charset=utf-8");
+       // org.apache.velocity.runtime.resource.loader.JarResourceLoader;
         List arr;
         if (LAST_TIME_SPEND > 200) {
             arr = CACHED;

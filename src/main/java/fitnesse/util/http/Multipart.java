@@ -19,7 +19,7 @@ public class Multipart extends Request<Multipart> {
     private PrintWriter writer;
     private String boundary;
     private OutputStream outputStream;
-    private List<FormField> formFields = new ArrayList<>();
+    private List<FormField> formFields = new ArrayList();
 
 
 

@@ -36,7 +36,7 @@ public class TestHistoryStageResponder implements Responder {
   static Thread runningThread;
 
   @Override
-  public Response makeResponse(FitNesseContext context, Request request) throws Exception {
+  public Response makeResponse(final FitNesseContext context, final Request request) throws Exception {
 
     SimpleResponse response = new SimpleResponse();
     response.setContentType("application/json;charset=utf-8");

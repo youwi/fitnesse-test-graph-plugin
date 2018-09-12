@@ -28,7 +28,7 @@ import java.util.Map;
 public class Post extends Request<Post> {
 
     private final byte[] content;
-    private Map<String, String> params = new HashMap<>();
+    private Map<String, String> params = new HashMap();
 
     /**
      * Constructor for making POST requests.
