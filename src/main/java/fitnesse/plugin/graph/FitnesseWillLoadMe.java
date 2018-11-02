@@ -61,6 +61,10 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         responderFactory.addResponder("pageHelpJson", PageHelpInfoJsonApi.class);
         responderFactory.addResponder("saveContentPosition", SaveByPosResponder.class);
         responderFactory.addResponder("testNow", TestWithContentResponder.class);
+        responderFactory.addResponder("userinfo", PageUserResponser.class);
+
+        responderFactory.addResponder("webdrivers", WebDriverManager.class);
+
 
         responderFactory.addResponder("proxy/", PageByHttpProxyResponder.class);
         responderFactory.addResponder("api/", PageByHttpProxyResponder.class);
