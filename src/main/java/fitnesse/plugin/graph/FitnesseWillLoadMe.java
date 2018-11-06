@@ -13,12 +13,10 @@ import fitnesse.testsystems.slim.CustomComparatorRegistry;
 import fitnesse.testsystems.slim.tables.SlimTableFactory;
 import fitnesse.wiki.SymbolicPage;
 import fitnesse.wiki.WikiPage;
-import fitnesse.wiki.WikiPageFactory;
 import fitnesse.wiki.WikiPageFactoryRegistry;
 import fitnesse.wiki.fs.FileSystemPage;
 import fitnesse.wikitext.parser.*;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -30,9 +28,10 @@ import java.lang.reflect.Modifier;
  */
 public class FitnesseWillLoadMe implements PluginFeatureFactory {
 
+
     @Override
     public Authenticator getAuthenticator() {
-        return null;
+        return new ConfluenceAuthenticator();
     }
 
     @Override
@@ -61,13 +60,13 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
         responderFactory.addResponder("pageHelpJson", PageHelpInfoJsonApi.class);
         responderFactory.addResponder("saveContentPosition", SaveByPosResponder.class);
         responderFactory.addResponder("testNow", TestWithContentResponder.class);
-        responderFactory.addResponder("userinfo", PageUserResponser.class);
+        responderFactory.addResponder("userinfo", PageUserResponder.class);
 
-        responderFactory.addResponder("webdrivers", WebDriverManager.class);
+        responderFactory.addResponder("webdrivers", WebDriverSessionManager.class);
 
 
-        responderFactory.addResponder("proxy/", PageByHttpProxyResponder.class);
-        responderFactory.addResponder("api/", PageByHttpProxyResponder.class);
+        responderFactory.addResponder("/proxy/", PageByHttpProxyResponder.class);
+        responderFactory.addResponder("/api/", PageByHttpProxyResponder.class);
 
 
         System.out.println("-----fitnesse.plugin.graph loaded-- ok --");

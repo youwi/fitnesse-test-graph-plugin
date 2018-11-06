@@ -21,15 +21,9 @@ public class BeanUtil {
     String[] fieldNames = str.split("\\.");
 
     Field field;
-
-    Class<?> targetClass = object.getClass();
-
     for (String fieldName : fieldNames) {
-
-      field = getFieldByName(targetClass, fieldName);
-      targetClass = field.getType();
+      field = getFieldByName(object.getClass(), fieldName);
       object = getFieldValue(object, field);
-
     }
     return object;
   }
@@ -39,15 +33,37 @@ public class BeanUtil {
     return field.get(obj);
   }
 
-  public static Field getFieldByName(Class<?> targetClass, String fieldName)
-          throws Exception {
-    return targetClass.getDeclaredField(fieldName);
+  public static Field getFieldByName(Class<?> targetClass, String fieldName) throws Exception {
+    Field field = null;
+    try {
+      field = targetClass.getDeclaredField(fieldName);
+    } catch (Exception e) {
+
+    }
+    if (field != null) {
+      return field;
+    }
+    try {
+      field = targetClass.getSuperclass().getDeclaredField(fieldName);
+    } catch (Exception e) {
+
+    }
+    if (field != null) {
+      return field;
+    }
+    try {
+      field = targetClass.getField(fieldName);
+    } catch (Exception e) {
+
+    }
+
+    return field;
   }
 
   public static String objectToJson(Object object) {
-    try{
+    try {
       return new Gson().toJson(object);
-    }catch (Exception e){
+    } catch (Exception e) {
 
     }
     if (object instanceof Map) {
@@ -55,6 +71,26 @@ public class BeanUtil {
     }
     JSONObject jsonObject = new JSONObjectEx(object);
     return jsonObject.toString();
+  }
+
+  /**
+   * 获取线程栈上的变量的变量.
+   * 语法: ClassName.varName
+   * //TODO
+   *
+   * @return object
+   */
+  public static Object getStackObject(String path) {
+    String className = path.split(".")[0];
+    String varName = path.split(".")[1];
+    for (StackTraceElement stc : Thread.currentThread().getStackTrace()) {
+      if (stc.getClassName().equals(className)) {
+        stc.getFileName();
+      }
+
+    }
+    ;
+    return null;
   }
 }
 

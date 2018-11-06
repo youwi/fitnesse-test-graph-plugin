@@ -33,12 +33,9 @@ public class RestartResponder implements Responder {
     try {
       currentJar = new File(FitNesseMain.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 
-
-      if (!currentJar.getName().endsWith(".jar"))
-        return "";
+      if (!currentJar.getName().endsWith(".jar")) return "";
       final ArrayList<String> command = new ArrayList<String>();
-      // command.add("/bin/sh");
-      // command.add("-c");
+
       command.add(javaBin);
       RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
       List<String> listOfArguments = runtimeMxBean.getInputArguments();
@@ -53,36 +50,36 @@ public class RestartResponder implements Responder {
       command.add(currentJar.getPath());
 
       final ProcessBuilder builder = new ProcessBuilder(command);
-      try {
 
+
+//      try {
+//        Object obj = BeanUtil.getObjectByPath(context, "fitNesse.theService.serverSocket");
+//        if (obj instanceof ServerSocket) {
+//          ((ServerSocket) obj).close();
+//        }
+//      } catch (Exception e) {
+//        System.out.println(e.getMessage());
+//      }
+
+      try {
         Process p = builder.start();
-        Thread shutdownThread = new Thread() {
-          @Override
-          public void run() {
-            try {
-              Object obj = BeanUtil.getObjectByPath(context, "fitNesse.theService.serverSocket");
-              if (obj instanceof ServerSocket) {
-                ((ServerSocket) obj).close();
-              }
-            } catch (Exception e) {
-              System.out.println(e.getMessage());
-            }
-          }
-        };
-        shutdownThread.start();
+        context.fitNesse.stop();
         p.waitFor(1, TimeUnit.SECONDS);
         String out = join(command.toArray(), " ");
         out += logStream(p.getErrorStream());
         out += logStream(p.getInputStream());
+        System.out.println(out);
+
         return out;
-      } catch (IOException e) {
-        e.printStackTrace();
-      } catch (InterruptedException e) {
+      } catch (Exception e) {
         e.printStackTrace();
       }
+
+
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
+
     return "";
   }
 
@@ -110,7 +107,6 @@ public class RestartResponder implements Responder {
 
   @Override
   public Response makeResponse(FitNesseContext context, Request request) throws Exception {
-
 
 
     String out = restartApplication(context);
