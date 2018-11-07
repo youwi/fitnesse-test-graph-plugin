@@ -1,7 +1,8 @@
 <h2></h2>
 <script src="http://cdn.bootcss.com/echarts/3.6.2/echarts.min.js"></script>
 
-<div id="main" style="width: 1000px;height:400px;"></div>
+<div id="main" style="min-width: 1000px;height:300px;margin-bottom: 20px;  border: 1px solid;"></div>
+<div id="wrongTable" style="width: 1000px;height:400px;"></div>
 
 <script>
     var testHistoryString=${TestHistoryString};
@@ -119,4 +120,41 @@
 
     var myChart = echarts.init(document.getElementById('main'));
     myChart.setOption(option);
+
+    fetch("?testStatus")
+            .then(resp => resp.json())
+            .then(data => {
+                let out = []
+                Object.keys(data).map(key => {
+                    if (data[key].wrong > 0) {
+                        out.push({...data[key],key})
+                    }
+                })
+                var tableDiv =  document.getElementById('wrongTable');
+                tableDiv.append(createTable(out))
+            })
+
+
+    function createTable(tableData) {
+        var table = document.createElement('table');
+        var tableBody = document.createElement('tbody');
+
+        tableData.forEach(function(rowData) {
+            var row = document.createElement('tr');
+
+            Object.values(rowData).forEach(function(cellData) {
+                var cell = document.createElement('td');
+                var link=document.createElement("a")
+                link.href=cellData;
+                link.text=cellData;
+                cell.appendChild(link);
+                row.appendChild(cell);
+            });
+
+            tableBody.appendChild(row);
+        });
+
+        table.appendChild(tableBody);
+        return table;
+     }
 </script>
