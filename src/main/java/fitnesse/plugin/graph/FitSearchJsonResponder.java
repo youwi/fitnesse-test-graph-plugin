@@ -68,6 +68,7 @@ public class FitSearchJsonResponder implements Responder {
 
   @Override
   public Response makeResponse(final FitNesseContext context, Request request) throws Exception {
+
     SimpleResponse response = new SimpleResponse();
     response.setContentType("application/json;charset=utf-8");
     final String searchString = request.getInput("searchString");
