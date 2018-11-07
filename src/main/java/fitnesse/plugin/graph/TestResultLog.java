@@ -1,7 +1,9 @@
 package fitnesse.plugin.graph;
 
 import fitnesse.reporting.Formatter;
+import fitnesse.testrunner.WikiTestPage;
 import fitnesse.testsystems.*;
+import fitnesse.wiki.WikiPage;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -11,6 +13,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static fitnesse.wiki.WikiPageProperty.HELP;
+import static fitnesse.wiki.WikiPageProperty.LAST_MODIFIED;
+import static fitnesse.wiki.WikiPageProperty.LAST_MODIFYING_USER;
 
 /**
  * pluginTestGraph
@@ -53,20 +59,49 @@ public class TestResultLog implements Formatter {
 
   @Override
   public void testComplete(TestPage testPage, TestSummary testSummary) {
-    String fullPath=testPage.getFullPath();
-    int old=0;
-    int newCount=testSummary.getWrong()+testSummary.getExceptions();
-    try{
-      old = CACHE.getInt(testPage.getFullPath());
-    }catch (Exception e){
-      System.out.println("---->"+e.getMessage());
-    }
+    String fullPath = testPage.getFullPath();
+    int newCount = testSummary.getWrong() + testSummary.getExceptions();
+    JSONObject node = getObject(CACHE, fullPath);
+    int old = getInt(node, "wrong");
+
     if (old != newCount) {
       committed = false;
-      CACHE.put(fullPath, newCount);
+      node.put("wrong", newCount);
     } else {
 
     }
+
+    if (testPage instanceof WikiTestPage) {
+      WikiPage page = ((WikiTestPage) testPage).getSourcePage();
+      String user = page.getData().getAttribute(LAST_MODIFYING_USER);
+      String pageName = page.getData().getAttribute(HELP);
+      String update = page.getData().getAttribute(LAST_MODIFIED);
+      node.put("user", user);
+      node.put("pageName", pageName);
+      node.put("update", update);
+    }
+
+  }
+
+  JSONObject getObject(JSONObject jsonObject, String key) {
+    JSONObject old;
+    try {
+      old = CACHE.getJSONObject(key);
+    } catch (Exception e) {
+      old = new JSONObject();
+      jsonObject.put(key, old);
+    }
+    return old;
+  }
+
+  int getInt(JSONObject jsonObject, String key) {
+    int old = 0;
+    try {
+      old = CACHE.getInt(key);
+    } catch (Exception e) {
+      System.out.println("---->" + e.getMessage());
+    }
+    return old;
   }
 
   static void saveStatusFile() {
@@ -75,7 +110,7 @@ public class TestResultLog implements Formatter {
     try {
       if (!committed) {
         Files.write(Paths.get(file.getPath()), CACHE.toString().getBytes());
-        System.out.println("--save-log---->"+STATUS_FILE+"<----");
+        System.out.println("--save-log---->" + STATUS_FILE + "<----");
       }
       committed = true;
     } catch (IOException e) {
@@ -100,7 +135,7 @@ public class TestResultLog implements Formatter {
     String fileContent = "{}";
     try {
       fileContent = new String(Files.readAllBytes(Paths.get(file.getPath())), StandardCharsets.UTF_8);
-      if("".equals(fileContent)){
+      if ("".equals(fileContent)) {
         return "{}";
       }
     } catch (IOException e) {
