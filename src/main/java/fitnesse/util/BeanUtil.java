@@ -1,9 +1,11 @@
 package fitnesse.util;
 
-import com.google.gson.Gson;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -60,15 +62,24 @@ public class BeanUtil {
     return field;
   }
 
+  /**
+   * Json.org 支持的特性有些怪. 如果是object类型就无法识别.
+   * @param object 对象
+   * @return
+   */
   public static String objectToJson(Object object) {
+    if (object instanceof Map) {
+      return new JSONObject((Map)object).toString();
+    }
+    if (object instanceof List){
+      return new JSONArray((List)object).toString();
+    }
     try {
-      return new Gson().toJson(object);
+      return new JSONObject(object).toString();
     } catch (Exception e) {
 
     }
-    if (object instanceof Map) {
-      return new JSONObject(object).toString();
-    }
+
     JSONObject jsonObject = new JSONObjectEx(object);
     return jsonObject.toString();
   }

@@ -13,8 +13,7 @@ import fitnesse.responders.NotFoundResponder;
 import fitnesse.wiki.*;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
+
 
 import static fitnesse.util.BeanUtil.objectToJson;
 

@@ -133,6 +133,7 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
   @Override
   public void registerSymbolTypes(SymbolProvider symbolProvider) throws PluginException {
     symbolProvider.add(new PageContentsNormalNameSymbolType());
+    symbolProvider.add(new ScheduleRunnerSymbolType());
   }
 
   @Override
