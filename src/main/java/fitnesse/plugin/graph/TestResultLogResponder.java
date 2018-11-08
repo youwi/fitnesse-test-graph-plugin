@@ -42,6 +42,11 @@ public class TestResultLogResponder implements Responder {
 
     SimpleResponse response = new SimpleResponse();
 
+    String deleteKey=request.getInput("deleteKey");
+    if(deleteKey!=null){
+      TestResultLog.CACHE.remove(deleteKey);
+    }
+
     response.setContent(TestResultLog.CACHE.toString());
     response.addHeader("Content-Type", "application/json;charset=UTF-8");
     response.addHeader("Access-Control-Allow-Origin", "*");

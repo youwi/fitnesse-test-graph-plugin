@@ -5,50 +5,49 @@
 <div id="wrongTable" style="width: 1000px;height:400px;"></div>
 
 <script>
-    var testHistoryString=${TestHistoryString};
+    var testHistoryString =${TestHistoryString};
 
-    var datax=[]
-    var dataFail=[]
-    var dataAll=[]
+    var datax = []
+    var dataFail = []
+    var dataAll = []
 
-    if(testHistoryString!=null){
-        var src=testHistoryString.testResultMap
-        for(var key in src){
+    if (testHistoryString != null) {
+        var src = testHistoryString.testResultMap
+        for (var key in src) {
             datax.push(key)
         }
-       // datax.sort() //sort by string
-        datax.sort((a,b)=>{
-            return new Date(a).getTime()-new Date(b).getTime()
+        // datax.sort() //sort by string
+        datax.sort((a, b) => {
+            return new Date(a).getTime() - new Date(b).getTime()
         })
-        for(var key of datax){
-            dataAll.push(src[key].right+src[key].wrong)
+        for (var key of datax) {
+            dataAll.push(src[key].right + src[key].wrong)
             dataFail.push(src[key].wrong)
         }
-        datax=datax.map((item)=>{
-            var now=new Date(item)
-            var time=""
-            time=[now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/');
-            time+=" "+[ now.getHours(),now.getMinutes(),now.getSeconds()].join(":")
+        datax = datax.map((item) => {
+            var now = new Date(item)
+            var time = ""
+            time = [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/');
+            time += " " + [now.getHours(), now.getMinutes(), now.getSeconds()].join(":")
             return time;
         })
     }
     //delete some cancel Tests
-    for(var i=1;i<datax.length-1;i++){
-       if(dataAll[i]<dataAll[i+1]/2  && dataAll[i]<dataAll[i-1]/2 ){
-           datax.splice(i,1)
-           dataFail.splice(i,1)
-           dataAll.splice(i,1)
-           i--;
-       }
+    for (var i = 1; i < datax.length - 1; i++) {
+        if (dataAll[i] < dataAll[i + 1] / 2 && dataAll[i] < dataAll[i - 1] / 2) {
+            datax.splice(i, 1)
+            dataFail.splice(i, 1)
+            dataAll.splice(i, 1)
+            i--;
+        }
     }
-
 
 
     option = {
         title: {
             text: 'TimeLine'
         },
-        tooltip : {
+        tooltip: {
             trigger: 'axis',
             axisPointer: {
                 type: 'cross',
@@ -58,7 +57,7 @@
             }
         },
         legend: {
-            data:['All Cases','Fail Cases']
+            data: ['All Cases', 'Fail Cases']
         },
         toolbox: {
             feature: {
@@ -71,35 +70,35 @@
             bottom: '3%',
             containLabel: true
         },
-        xAxis : [
+        xAxis: [
             {
-                type : 'category',
-                boundaryGap : false,
-                data : datax
+                type: 'category',
+                boundaryGap: false,
+                data: datax
             }
         ],
-        yAxis : [
+        yAxis: [
             {
-                type : 'value'
+                type: 'value'
             }
         ],
-        series : [
+        series: [
             {
-                name:'Fail Cases',
-                smooth:true,
-                type:'line',
-                areaStyle: {normal: {color:"red"}},
-                data:dataFail
+                name: 'Fail Cases',
+                smooth: true,
+                type: 'line',
+                areaStyle: {normal: {color: "red"}},
+                data: dataFail
             },
             {
-                name:'All Cases',
-                type:'line',
-                smooth:true,
-                areaStyle: {normal: {color:"rgba(216, 201, 205, 0.43)"}},
-                data:dataAll
+                name: 'All Cases',
+                type: 'line',
+                smooth: true,
+                areaStyle: {normal: {color: "rgba(216, 201, 205, 0.43)"}},
+                data: dataAll
             }
         ]
-        ,  dataZoom: [{
+        , dataZoom: [{
             type: 'inside',
             start: 0,
             end: 100
@@ -121,40 +120,71 @@
     var myChart = echarts.init(document.getElementById('main'));
     myChart.setOption(option);
 
-    fetch("?testStatus")
-            .then(resp => resp.json())
-            .then(data => {
-                let out = []
-                Object.keys(data).map(key => {
-                    if (data[key].wrong > 0) {
-                        out.push({...data[key],key})
-                    }
+
+    function initTable() {
+        fetch("?testStatus")
+                .then(resp => resp.json())
+                .then(data => {
+                    let out = []
+                    Object.keys(data).map(key => {
+                        if (data[key].wrong > 0) {
+                            let node = {pageName: "", wrong: 0, user: "", ...data[key], key}
+                            out.push(node)
+                        }
+                    })
+                    var tableDiv = document.getElementById('wrongTable');
+                    tableDiv.innerHTML="";
+                    tableDiv.append(createTable(out))
                 })
-                var tableDiv =  document.getElementById('wrongTable');
-                tableDiv.append(createTable(out))
-            })
+    }
 
 
     function createTable(tableData) {
         var table = document.createElement('table');
         var tableBody = document.createElement('tbody');
 
-        tableData.forEach(function(rowData) {
+        tableData.forEach(function (rowData) {
             var row = document.createElement('tr');
 
-            Object.values(rowData).forEach(function(cellData) {
+            Object.values(rowData).forEach(function (cellData) {
                 var cell = document.createElement('td');
-                var link=document.createElement("a")
-                link.href=cellData;
-                link.text=cellData;
+                var link = document.createElement("a")
+                link.href = cellData;
+                link.text = cellData;
                 cell.appendChild(link);
                 row.appendChild(cell);
             });
+            var cellDelete = document.createElement('td');
+            var a = document.createElement("a");
+            a.text = "delete"
+            a.className = "delete-link"
+            a.onclick = () => deleteByKey(rowData.key);
+            cellDelete.appendChild(a)
+            row.appendChild(cellDelete)
 
             tableBody.appendChild(row);
         });
 
         table.appendChild(tableBody);
         return table;
-     }
+    }
+
+    /**
+     * 删除无用的key
+     */
+    function deleteByKey(key) {
+        fetch("?testStatus&deleteKey=" + key).then(resp => resp.json())
+                .then(json=>{
+                    initTable();
+                })
+    }
+
+    initTable();
 </script>
+
+<style>
+
+    .delete-link{
+        cursor: pointer;
+    }
+</style>
