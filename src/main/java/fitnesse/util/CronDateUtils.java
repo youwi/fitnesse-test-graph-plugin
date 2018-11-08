@@ -1,7 +1,6 @@
 package fitnesse.util;
 
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,7 +10,7 @@ import java.util.Date;
  * Created by zhangzh on 2016/8/2.
  */
 public class CronDateUtils {
-  private static final String CRON_DATE_FORMAT = "ss mm HH dd MM ? yyyy";
+  private static final String CRON_DATE_FORMAT = "ss mm HH dd MM W yyyy";
 
   /***
    *
@@ -33,20 +32,44 @@ public class CronDateUtils {
    * @return Date日期
    */
 
-  public static Date getDate(final String cron) {
+  public static Date getDate( String cron) {
 
 
     if (cron == null) {
       return null;
     }
+    cron=cron.replace("*", "0").replace("?","0");
 
     SimpleDateFormat sdf = new SimpleDateFormat(CRON_DATE_FORMAT);
     Date date = null;
     try {
       date = sdf.parse(cron);
     } catch (ParseException e) {
-      return null;// 此处缺少异常处理,自己根据需要添加
+      System.out.println(e.getMessage());
+
     }
     return date;
+  }
+
+  /**
+   * 支持部分表达式,生成时间间隔
+   *
+   * @param cronString 表达式
+   * @return period second
+   */
+  public static long getPeriod(String cronString) {
+    return 24*60*60*1000;
+  }
+
+  /**
+   * 当前时间差 时分秒
+   * @param cronString
+   * @return
+   */
+  public static long getInital(String cronString){
+   Date date= getDate(cronString);
+
+   long out=date.getMinutes()*60*1000+date.getSeconds()*1000+date.getHours()*60*60*10000;
+   return out;
   }
 }

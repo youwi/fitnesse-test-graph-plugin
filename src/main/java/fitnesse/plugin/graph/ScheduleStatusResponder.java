@@ -19,7 +19,7 @@ public class ScheduleStatusResponder implements Responder {
 
     SimpleResponse response = new SimpleResponse();
 
-    response.setContent(new JSONObject(ScheduleRunnerSymbolType.CACHE).toString());
+    response.setContent(new JSONObject(ScheduleRunnerSymbolType.CACHE_CRON).toString());
     response.addHeader("Content-Type", "application/json;charset=UTF-8");
     response.addHeader("Access-Control-Allow-Origin", "*");
 
