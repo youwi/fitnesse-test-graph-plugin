@@ -75,13 +75,11 @@ public class BeanUtil {
       return new JSONArray((List)object).toString();
     }
     try {
-      return new JSONObject(object).toString();
+      return new JSONObjectEx(object).toString();
     } catch (Exception e) {
 
     }
-
-    JSONObject jsonObject = new JSONObjectEx(object);
-    return jsonObject.toString();
+    return "{}";
   }
 
   /**
