@@ -20,9 +20,11 @@ import java.util.Map;
  * 返回纯文本.
  */
 public class WikiIncludePageResponder implements Responder {
+  FitNesseContext context;
 
   @Override
   public Response makeResponse(FitNesseContext context, Request request) throws Exception {
+    this.context = context;
     WikiPagePath path = PathParser.parse(request.getResource());
     WikiPage currentPage = context.getRootPage().getPageCrawler().getPage(path);
 
@@ -30,11 +32,7 @@ public class WikiIncludePageResponder implements Responder {
     TestPageWithSuiteSetUpAndTearDownEx down = new TestPageWithSuiteSetUpAndTearDownEx(currentPage);
     String newContent = down.getContent();
 
-    ParsingPage parsingPage = BaseWikitextPage.makeParsingPage((BaseWikitextPage) currentPage);
-    Symbol syntaxTree = Parser.make(parsingPage, newContent).parse();
-    Translator wii = new WikiTranslator(new WikiSourcePage(currentPage));
-    String wikiFullContent = wii.translateTree(syntaxTree);
-
+    String wikiFullContent=getFullContent(newContent);
 
     SimpleResponse response = new SimpleResponse();
 
@@ -43,8 +41,30 @@ public class WikiIncludePageResponder implements Responder {
     response.addHeader("Access-Control-Allow-Origin", "*");
     response.addHeader("Content-Type", "text/plain;charset=UTF-8");
 
-
     return response;
+  }
+
+  public String getFullContent(String src) {
+    if (src.indexOf("!include") == -1) return src;
+    StringBuilder stringBuilder = new StringBuilder();
+    for (String lines : src.split("\n")) {
+
+      if (lines.startsWith("!include")) {
+        String[] arg = lines.trim().split(" ");
+        String path = arg[arg.length - 1];
+        String out=loadContentByPath(path);
+        stringBuilder.append(out).append("\n");
+      }else{
+        stringBuilder.append(lines).append("\n");
+      }
+    }
+    return stringBuilder.toString();
+  }
+
+  public String loadContentByPath(String pathString) {
+    WikiPagePath path = PathParser.parse(pathString);
+    WikiPage currentPage = context.getRootPage().getPageCrawler().getPage(path);
+    return getFullContent(currentPage.getData().getContent());
   }
 
 
@@ -59,23 +79,5 @@ public class WikiIncludePageResponder implements Responder {
     }
   }
 
-
-  static class WikiTranslatorEx extends WikiTranslator {
-    SymbolType include = new Include();
-    WikiBuilder includeBuilder = new WikiBuilder().text("!include ").child(0);
-
-    public WikiTranslatorEx(SourcePage page) {
-      super(page);
-    }
-
-    @Override
-    protected Translation getTranslation(SymbolType symbolType) {
-      if (symbolType.toString().equals(include.toString())) {
-        return includeBuilder;
-      } else {
-        return super.getTranslation(symbolType);
-      }
-    }
-  }
 
 }
