@@ -32,7 +32,7 @@ public class WikiIncludePageResponder implements Responder {
     TestPageWithSuiteSetUpAndTearDownEx down = new TestPageWithSuiteSetUpAndTearDownEx(currentPage);
     String newContent = down.getContent();
 
-    String wikiFullContent=getFullContent(newContent);
+    String wikiFullContent=getFullContent(newContent,request.getResource());
 
     SimpleResponse response = new SimpleResponse();
 
@@ -44,7 +44,7 @@ public class WikiIncludePageResponder implements Responder {
     return response;
   }
 
-  public String getFullContent(String src) {
+  public String getFullContent(String src,String oriPath) {
     if (src.indexOf("!include") == -1) return src;
     StringBuilder stringBuilder = new StringBuilder();
     for (String lines : src.split("\n")) {
@@ -52,7 +52,7 @@ public class WikiIncludePageResponder implements Responder {
       if (lines.startsWith("!include")) {
         String[] arg = lines.trim().split(" ");
         String path = arg[arg.length - 1];
-        String out=loadContentByPath(path);
+        String out=loadContentByPath(path,oriPath);
         stringBuilder.append(out).append("\n");
       }else{
         stringBuilder.append(lines).append("\n");
@@ -61,10 +61,27 @@ public class WikiIncludePageResponder implements Responder {
     return stringBuilder.toString();
   }
 
-  public String loadContentByPath(String pathString) {
-    WikiPagePath path = PathParser.parse(pathString);
-    WikiPage currentPage = context.getRootPage().getPageCrawler().getPage(path);
-    return getFullContent(currentPage.getData().getContent());
+  public String loadContentByPath(String pathString,String oriPath) {
+    try{
+      WikiPagePath path = PathParser.parse(pathString);
+      WikiPagePath pathOri = PathParser.parse(oriPath);
+      if(path.isSubPagePath()){
+        path=pathOri.append(path);
+      }else if(path.isRelativePath()){
+        pathOri.removeNameFromEnd();
+        path=pathOri.append(path);
+      }else if(path.isBackwardSearchPath()){
+        //        pathOri.removeNameFromEnd();
+        //        pathOri.removeNameFromEnd();
+        //        path=pathOri.append(path);
+      }
+
+      WikiPage currentPage = context.getRootPage().getPageCrawler().getPage(path);
+      //getPage(path);
+      return getFullContent(currentPage.getData().getContent(),path.toString());
+    }catch (Exception e){
+      return " -- "+e.getMessage()+" -- "+pathString;
+    }
   }
 
 
