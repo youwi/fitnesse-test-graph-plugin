@@ -13,9 +13,10 @@ import java.util.Map;
  * pluginTestGraph
  * Created by yu on 2018/11/2.
  */
-public class ConfluenceAuthenticator extends Authenticator {
+public class TmpConfluenceAuthenticator extends Authenticator {
 
   Map<String, String> cache = new HashMap();
+  //TODO
   String url = "http://conf.jihui.in/rest/prototype/1/search.json?max-results=1000&search=user&query=";
 
   /**

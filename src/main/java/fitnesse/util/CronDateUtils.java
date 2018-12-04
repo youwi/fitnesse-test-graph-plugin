@@ -68,8 +68,11 @@ public class CronDateUtils {
    */
   public static long getInital(String cronString){
    Date date= getDate(cronString);
-
-   long out=date.getMinutes()*60*1000+date.getSeconds()*1000+date.getHours()*60*60*10000;
-   return out;
+   if(date!=null){
+     long out=date.getMinutes()*60*1000+date.getSeconds()*1000+date.getHours()*60*60*10000;
+     return out;
+   }else{
+     return  0;
+   }
   }
 }

@@ -4,14 +4,11 @@ import fitnesse.authentication.Authenticator;
 import fitnesse.components.TraversalListener;
 import fitnesse.plugins.PluginException;
 import fitnesse.plugins.PluginFeatureFactory;
-import fitnesse.reporting.Formatter;
 import fitnesse.reporting.FormatterRegistry;
 import fitnesse.responders.ResponderFactory;
 import fitnesse.responders.editing.ContentFilter;
 import fitnesse.responders.files.FileResponder;
 import fitnesse.testrunner.TestSystemFactoryRegistry;
-import fitnesse.testrunner.TestsRunnerListener;
-import fitnesse.testsystems.*;
 import fitnesse.testsystems.slim.CustomComparatorRegistry;
 import fitnesse.testsystems.slim.tables.ScriptTable;
 import fitnesse.testsystems.slim.tables.SlimTableFactory;
@@ -35,7 +32,7 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
 
   @Override
   public Authenticator getAuthenticator() {
-    return new ConfluenceAuthenticator();
+    return new TmpConfluenceAuthenticator();
   }
 
   @Override
