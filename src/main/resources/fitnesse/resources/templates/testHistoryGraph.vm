@@ -2,8 +2,8 @@
 <script src="files/fitnesse/javascript/echarts.min.js"></script>
 
 <div id="main" style="min-width: 1000px;height:300px;margin-bottom: 20px;  border: 1px solid;"></div>
-<div id="wrongTable" style="width: 1000px;height:400px;"></div>
-
+<div id="wrongTable" style="width: 1000px;"></div>
+<button id="clearAll" onclick="clearAllKey()">clearAll</button>
 <script>
     var testHistoryString =${TestHistoryString};
 
@@ -132,6 +132,7 @@
                             out.push(node)
                         }
                     })
+                    out=out.sort((a,b)=>a.key.localeCompare(b.key));
                     var tableDiv = document.getElementById('wrongTable');
                     tableDiv.innerHTML="";
                     tableDiv.append(createTable(out))
@@ -178,6 +179,12 @@
                     initTable();
                 })
     }
+    function clearAllKey(key) {
+        fetch("?testStatus&clear=" + key).then(resp => resp.json())
+                .then(json=>{
+                    initTable();
+                })
+    }
 
     initTable();
 </script>
@@ -186,5 +193,9 @@
 
     .delete-link{
         cursor: pointer;
+    }
+    #wrongTable td{
+        max-width: 50vw;
+        overflow: hidden;
     }
 </style>

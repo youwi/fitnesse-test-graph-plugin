@@ -14,9 +14,7 @@ import java.nio.file.Paths;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static fitnesse.wiki.WikiPageProperty.HELP;
-import static fitnesse.wiki.WikiPageProperty.LAST_MODIFIED;
-import static fitnesse.wiki.WikiPageProperty.LAST_MODIFYING_USER;
+import static fitnesse.wiki.WikiPageProperty.*;
 
 /**
  * pluginTestGraph
@@ -35,6 +33,10 @@ public class TestResultLog implements Formatter {
     }
   };
   public static JSONObject CACHE = new JSONObject(initStatusFile());
+
+  public static void clear(){
+    CACHE=new JSONObject("{}");
+  }
 
 
   public TestResultLog() {
@@ -62,16 +64,11 @@ public class TestResultLog implements Formatter {
     String fullPath = testPage.getFullPath();
     int newCount = testSummary.getWrong() + testSummary.getExceptions();
     JSONObject node = getObject(CACHE, fullPath);
-    int old = getInt(node, "wrong");
-
-    if (old != newCount) {
-      committed = false;
-      node.put("wrong", newCount);
-    } else {
-
-    }
+    //int old = getInt(node, "wrong");
 
     if (testPage instanceof WikiTestPage) {
+      committed = false;
+      node.put("wrong", newCount);
       WikiPage page = ((WikiTestPage) testPage).getSourcePage();
       String user = page.getData().getAttribute(LAST_MODIFYING_USER);
       String pageName = page.getData().getAttribute(HELP);
@@ -79,6 +76,11 @@ public class TestResultLog implements Formatter {
       node.put("user", user);
       node.put("pageName", pageName);
       node.put("update", update);
+
+      String skip=page.getData().getAttribute(PRUNE);// Skip Test
+      if("on".equals(skip)){
+        node.put("wrong",0);
+      }
     }
 
   }

@@ -5,30 +5,7 @@ import fitnesse.Responder;
 import fitnesse.http.Request;
 import fitnesse.http.Response;
 import fitnesse.http.SimpleResponse;
-import fitnesse.reporting.Formatter;
-import fitnesse.testsystems.*;
-import fitnesse.util.BeanUtil;
-import fitnesse.wiki.PageData;
-import fitnesse.wiki.PathParser;
-import fitnesse.wiki.WikiPage;
-import fitnesse.wiki.WikiPagePath;
-import org.json.JSONObject;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static fitnesse.plugin.graph.TestResultLog.STATUS_FILE;
-import static fitnesse.wiki.WikiPageProperty.LAST_MODIFIED;
-import static fitnesse.wiki.WikiPageProperty.LAST_MODIFYING_USER;
 
 /**
  * pluginTestGraph
@@ -43,8 +20,12 @@ public class TestResultLogResponder implements Responder {
     SimpleResponse response = new SimpleResponse();
 
     String deleteKey=request.getInput("deleteKey");
+    String clearKey=request.getInput("clear");
     if(deleteKey!=null){
       TestResultLog.CACHE.remove(deleteKey);
+    }
+    if(clearKey!=null){
+      TestResultLog.clear();
     }
 
     response.setContent(TestResultLog.CACHE.toString());
