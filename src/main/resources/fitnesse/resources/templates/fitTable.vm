@@ -1,6 +1,7 @@
 <textarea id="pageContent" style="visibility: hidden">${content}</textarea>
 <span id="editor"></span>
 <span id="save_buttons"></span>
+<link rel="shortcut icon" type="image/png" href="/files/fitnesse/images/favicon.png" />
 
 #if(${debug})
     <script src="http://127.0.0.1:3000/static/js/bundle.js" type="text/javascript"></script>

@@ -34,7 +34,7 @@ public class FitTableVmResponder implements Responder {
     WikiPagePath path = PathParser.parse(resource);
     WikiPage page = context.getRootPage().getPageCrawler().getPage(path);
 
-    PageData pageData = page.getData();
+
 
     // context.pageFactory.getVelocityEngine().resourceExists()
     //  ClassUtils.getResourceAsStream(getClass(), "/fitnesse/resources/templates/nothingvm.vm");
@@ -56,7 +56,10 @@ public class FitTableVmResponder implements Responder {
     }
     //html.put("viewLocation", request.getResource());
     html.setMainTemplate("fitTable");
-    html.put("content", pageData.getContent());
+    if(page!=null){
+      PageData pageData = page.getData();
+      html.put("content", pageData.getContent());
+    }
 
     response.setContent(html.html());
 
