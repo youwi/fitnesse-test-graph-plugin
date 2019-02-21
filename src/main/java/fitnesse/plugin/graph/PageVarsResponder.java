@@ -38,52 +38,12 @@ public class PageVarsResponder implements Responder {
 
         WikiPage rootPage = context.getRootPage(request.getMap());
 
-
         SimpleResponse response = new SimpleResponse();
         response.setContentType("application/json;charset=utf-8");
-        String resource = request.getResource();
-
-        WikiPagePath path = PathParser.parse(resource);
-        WikiPage page = context.getRootPage().getPageCrawler().getPage(path);
-        Map<String, Object> out = new HashMap();
-        List<Map> hisCache = new ArrayList();
-        List<Map> overLoads = new ArrayList();
         try {
+            String resource = request.getResource();
+            response.setContent(buildVarTagsJson(context, resource));
 
-            //String vars = page.getVariable("A");
-            while (page != null) {
-                if (page.isRoot()) {
-                    break;
-                }
-                ParsingPage pp = null;
-                if (page instanceof FileSystemPage) {
-                    pp = ((FileSystemPage) page).getParsingPage();
-                }
-                if (page instanceof WikiFilePage) {
-                    pp = ((WikiFilePage) page).getParsingPage();
-                }
-                if (pp != null) {
-                    ParsingPage.Cache cacheObj = (ParsingPage.Cache) getField(pp, "cache");
-                    Map map = (Map) getField(cacheObj, "cache");
-                    hisCache.add(map);
-                }
-                page = page.getParent();
-            }
-            //后入先出
-            Collections.reverse(hisCache);
-            for (Map map : hisCache) {
-                for (String key : out.keySet()) {
-                    if (map.get(key) != null) {
-                        Map temp = new HashMap();
-                        temp.put(key, out.get(key));
-                        overLoads.add(temp);
-                    }
-                    out.get(key).equals(map.get(key));
-                }
-                out.putAll(map);
-            }
-            out.put("__OVER_LOADS__", overLoads);
-            response.setContent(new JSONObject(out).toString());
         } catch (Exception e) {
             e.printStackTrace();
             response.setContent("{error:1,msg:'" + e.getMessage() + "'}");
@@ -92,8 +52,73 @@ public class PageVarsResponder implements Responder {
         return response;
     }
 
+    public static String buildVarTagsJson(FitNesseContext context, String resource) {
+        return new JSONObject(getVarTagsMap(context, resource)).toString();
+    }
 
-    public Object getField(Object src, String name) {
+    public static String buildVarTagsWikiText(FitNesseContext context, String resource) {
+        StringBuilder out=new StringBuilder();
+        Map<String, Object> src = getVarTagsMap(context, resource);
+        for (String key : src.keySet()) {
+            out.append("!define  ");
+            out.append(key);
+            out.append(" (");
+
+            Object tar=src.get(key);
+            if(tar instanceof Maybe){
+                out.append(((Maybe)tar).getValue());
+            }
+
+            out.append(" )\n");
+        }
+        return out.toString();
+    }
+
+    public static Map getVarTagsMap(FitNesseContext context, String resource) {
+        WikiPagePath path = PathParser.parse(resource);
+        WikiPage page = context.getRootPage().getPageCrawler().getPage(path);
+        Map<String, Object> out = new HashMap();
+        List<Map> hisCache = new ArrayList();
+        List<Map> overLoads = new ArrayList();
+
+        //String vars = page.getVariable("A");
+        while (page != null) {
+            if (page.isRoot()) {
+                break;
+            }
+            ParsingPage pp = null;
+            if (page instanceof FileSystemPage) {
+                pp = ((FileSystemPage) page).getParsingPage();
+            }
+            if (page instanceof WikiFilePage) {
+                pp = ((WikiFilePage) page).getParsingPage();
+            }
+            if (pp != null) {
+                ParsingPage.Cache cacheObj = (ParsingPage.Cache) getField(pp, "cache");
+                Map map = (Map) getField(cacheObj, "cache");
+                hisCache.add(map);
+            }
+            page = page.getParent();
+        }
+        //后入先出
+        Collections.reverse(hisCache);
+        for (Map map : hisCache) {
+            for (String key : out.keySet()) {
+                if (map.get(key) != null) {
+                    Map temp = new HashMap();
+                    temp.put(key, out.get(key));
+                    overLoads.add(temp);
+                }
+                out.get(key).equals(map.get(key));
+            }
+            out.putAll(map);
+        }
+        out.put("__OVER_LOADS__", overLoads);
+        return out;
+    }
+
+
+    public static Object getField(Object src, String name) {
         Field field = null; //NoSuchFieldException
         try {
             field = src.getClass().getDeclaredField(name);

@@ -8,11 +8,8 @@ import fitnesse.http.SimpleResponse;
 
 import fitnesse.testrunner.TestPageWithSuiteSetUpAndTearDown;
 import fitnesse.wiki.*;
-import fitnesse.wikitext.parser.*;
-import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
 
 /**
  * 获取当前页面包含的内容的页面
@@ -32,11 +29,15 @@ public class WikiIncludePageResponder implements Responder {
     TestPageWithSuiteSetUpAndTearDownEx down = new TestPageWithSuiteSetUpAndTearDownEx(currentPage);
     String newContent = down.getContent();
 
-    String wikiFullContent=getFullContent(newContent,request.getResource());
+    String wikiFullContent=getFullContent(context,newContent,request.getResource());
 
+    return textResponse(wikiFullContent);
+  }
+
+  static Response textResponse(String text) throws UnsupportedEncodingException {
     SimpleResponse response = new SimpleResponse();
 
-    response.setContent(wikiFullContent);
+    response.setContent(text);
 
     response.addHeader("Access-Control-Allow-Origin", "*");
     response.addHeader("Content-Type", "text/plain;charset=UTF-8");
@@ -44,7 +45,7 @@ public class WikiIncludePageResponder implements Responder {
     return response;
   }
 
-  public String getFullContent(String src,String oriPath) {
+  public static String getFullContent(FitNesseContext context,String src,String oriPath) {
     if (src.indexOf("!include") == -1) return src;
     StringBuilder stringBuilder = new StringBuilder();
     for (String lines : src.split("\n")) {
@@ -52,7 +53,7 @@ public class WikiIncludePageResponder implements Responder {
       if (lines.startsWith("!include")) {
         String[] arg = lines.trim().split(" ");
         String path = arg[arg.length - 1];
-        String out=loadContentByPath(path,oriPath);
+        String out=loadContentByPath(context,path,oriPath);
         stringBuilder.append(out).append("\n");
       }else{
         stringBuilder.append(lines).append("\n");
@@ -61,7 +62,7 @@ public class WikiIncludePageResponder implements Responder {
     return stringBuilder.toString();
   }
 
-  public String loadContentByPath(String pathString,String oriPath) {
+  public static String loadContentByPath(FitNesseContext context,String pathString,String oriPath) {
     try{
       WikiPagePath path = PathParser.parse(pathString);
       WikiPagePath pathOri = PathParser.parse(oriPath);
@@ -78,7 +79,7 @@ public class WikiIncludePageResponder implements Responder {
 
       WikiPage currentPage = context.getRootPage().getPageCrawler().getPage(path);
       //getPage(path);
-      return getFullContent(currentPage.getData().getContent(),path.toString());
+      return getFullContent(context,currentPage.getData().getContent(),path.toString());
     }catch (Exception e){
       return " -- "+e.getMessage()+" -- "+pathString;
     }

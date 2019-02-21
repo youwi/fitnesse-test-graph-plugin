@@ -65,6 +65,8 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
     responderFactory.addResponder("testStatus", TestResultLogResponder.class);
     responderFactory.addResponder("ScheduleStatus", ScheduleStatusResponder.class);
     responderFactory.addResponder("fullContent", WikiIncludePageResponder.class);
+    responderFactory.addResponder("fullContentWithVar", WikiIncludeWithVarPageResponder.class);
+
 
 
 
