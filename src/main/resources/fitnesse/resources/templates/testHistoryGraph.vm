@@ -121,22 +121,61 @@
     myChart.setOption(option);
 
 
+    function initTableWithData(data) {
+        let out = []
+        Object.keys(data).map(key => {
+            if (data[key].wrong > 0) {
+                let node = {pageName: "", wrong: 0, user: "", ...data[key], key}
+                out.push(node)
+            }
+        })
+        out = out.sort((a, b) => a.key.localeCompare(b.key));
+        var tableDiv = document.getElementById('wrongTable');
+        tableDiv.innerHTML = "";
+        tableDiv.append(createTable(out))
+
+    }
+
     function initTable() {
         fetch("?testStatus")
                 .then(resp => resp.json())
                 .then(data => {
-                    let out = []
-                    Object.keys(data).map(key => {
-                        if (data[key].wrong > 0) {
-                            let node = {pageName: "", wrong: 0, user: "", ...data[key], key}
-                            out.push(node)
-                        }
-                    })
-                    out=out.sort((a,b)=>a.key.localeCompare(b.key));
-                    var tableDiv = document.getElementById('wrongTable');
-                    tableDiv.innerHTML="";
-                    tableDiv.append(createTable(out))
+                    initTableWithData(data)
                 })
+    }
+
+    function domCtd(key, srcDom) {
+        //添加删除按钮
+        var cellDelete = document.createElement('td');
+        var a = document.createElement("a");
+        a.text = "delete"
+        a.className = "delete-link"
+        a.onclick = () => deleteByKey(key);
+        cellDelete.appendChild(a)
+        srcDom.appendChild(cellDelete)
+
+    }
+
+    function domCtextarea(key, srcDom, oriValue) {
+        //添加评论按钮,鼠标移开时保存
+        var cellDelete = document.createElement('td');
+        var a = document.createElement("textarea");
+        a.placeHolder = "添加说明"
+        a.className = "submit-textarea"
+        a.value = oriValue || "";
+        a.rows=a.value.split("\n").length;
+        a.onchange = (e) => markByKey(key, e.target.value);
+        a.spellcheck=false;
+        //自动自动换行
+        a.onkeydown=(e)=>{
+            if(e.key==="Enter")
+                a.rows=e.target.value.split("\n").length+1
+        };
+        a.onkeyup=(e)=>{a.rows=e.target.value.split("\n").length};
+
+        cellDelete.appendChild(a)
+        cellDelete.className = "td-submit"
+        srcDom.appendChild(cellDelete)
     }
 
 
@@ -146,6 +185,8 @@
 
         tableData.forEach(function (rowData) {
             var row = document.createElement('tr');
+            var msg = rowData.msg;
+            delete rowData.msg;//为了后面的消息能正常显示
 
             Object.values(rowData).forEach(function (cellData) {
                 var cell = document.createElement('td');
@@ -155,47 +196,77 @@
                 cell.appendChild(link);
                 row.appendChild(cell);
             });
-            var cellDelete = document.createElement('td');
-            var a = document.createElement("a");
-            a.text = "delete"
-            a.className = "delete-link"
-            a.onclick = () => deleteByKey(rowData.key);
-            cellDelete.appendChild(a)
-            row.appendChild(cellDelete)
+            domCtd(rowData.key, row)
+            domCtextarea(rowData.key, row, msg)
 
             tableBody.appendChild(row);
+
         });
 
         table.appendChild(tableBody);
         return table;
     }
 
+
     /**
      * 删除无用的key
      */
     function deleteByKey(key) {
         fetch("?testStatus&deleteKey=" + key).then(resp => resp.json())
-                .then(json=>{
-                    initTable();
+                .then(json => {
+                    initTableWithData(json);
                 })
     }
+
     function clearAllKey(key) {
         fetch("?testStatus&clear=" + key).then(resp => resp.json())
-                .then(json=>{
-                    initTable();
+                .then(json => {
+                    initTableWithData(json);
+                })
+    }
+
+    /**
+     * 备注调试消息,加一个字段用于备注消息
+     * @param key
+     * @param msg
+     */
+    function markByKey(key, msg) {
+        fetch("?testStatus&key=" + key + "&msg=" + encodeURI(msg)).then(resp => resp.json())
+                .then(json => {
+                    initTableWithData(json);
                 })
     }
 
     initTable();
+
+
 </script>
 
 <style>
 
-    .delete-link{
+    .delete-link {
         cursor: pointer;
     }
-    #wrongTable td{
+
+    #wrongTable td {
         max-width: 50vw;
         overflow: hidden;
+    }
+
+    #wrongTable td:first-child {
+        max-width: 200px;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .td-submit {
+        padding: 0px;
+    }
+
+    .td-submit textarea {
+        padding: 5px 5px;
+        display: block;
+        min-height: 30px;
+        border: none;
     }
 </style>

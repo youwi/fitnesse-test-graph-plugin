@@ -5,6 +5,7 @@ import fitnesse.Responder;
 import fitnesse.http.Request;
 import fitnesse.http.Response;
 import fitnesse.http.SimpleResponse;
+import org.json.JSONObject;
 
 
 /**
@@ -21,11 +22,20 @@ public class TestResultLogResponder implements Responder {
 
     String deleteKey=request.getInput("deleteKey");
     String clearKey=request.getInput("clear");
+    String msgKey=request.getInput("msg");
+    String key=request.getInput("key");
+
+
     if(deleteKey!=null){
       TestResultLog.CACHE.remove(deleteKey);
     }
     if(clearKey!=null){
       TestResultLog.clear();
+    }
+    //保存msg
+    if(msgKey!=null){
+      JSONObject obj=  TestResultLog.CACHE.getJSONObject(key);
+      obj.put("msg",msgKey);
     }
 
     response.setContent(TestResultLog.CACHE.toString());

@@ -69,7 +69,7 @@ public class PageVarsResponder implements Responder {
                 out.append(((Maybe)tar).getValue());
             }
 
-            out.append(" )\n");
+            out.append(")\n");
         }
         return out.toString();
     }
