@@ -3,7 +3,9 @@
 
 <div id="main" style="min-width: 1000px;height:300px;margin-bottom: 20px;  border: 1px solid;"></div>
 <div id="wrongTable" style="width: 1000px;"></div>
-<button id="clearAll" onclick="clearAllKey()">clearAll</button>
+<button id="clearAll" onclick="clearAllKey()">ClearAll</button>
+<button id="runAllError" onclick="runAllErr()">RunAllEr</button>
+<div id="summary"></div>
 <script>
     var testHistoryString =${TestHistoryString};
 
@@ -122,6 +124,18 @@
 
 
     function initTableWithData(data) {
+        let eData=filterError(data);
+        var tableDiv = document.getElementById('wrongTable');
+        tableDiv.innerHTML = "";
+        tableDiv.append(createTable(eData))
+
+        let summaryDiv=document.getElementById("summary");
+        summaryDiv.innerText=`错误总数为: ${eData.length}`
+    }
+    /**
+     * 统计出错误的结果行.只要错误的
+     */
+    function filterError(data) {
         let out = []
         Object.keys(data).map(key => {
             if (data[key].wrong > 0) {
@@ -130,19 +144,9 @@
             }
         })
         out = out.sort((a, b) => a.key.localeCompare(b.key));
-        var tableDiv = document.getElementById('wrongTable');
-        tableDiv.innerHTML = "";
-        tableDiv.append(createTable(out))
-
+        return out;
     }
 
-    function initTable() {
-        fetch("?testStatus")
-                .then(resp => resp.json())
-                .then(data => {
-                    initTableWithData(data)
-                })
-    }
 
     function domCtd(key, srcDom) {
         //添加删除按钮
@@ -208,6 +212,13 @@
     }
 
 
+    function initTable() {
+        fetch("?testStatus")
+                .then(resp => resp.json())
+                .then(data => {
+                    initTableWithData(data)
+                })
+    }
     /**
      * 删除无用的key
      */
@@ -215,6 +226,7 @@
         fetch("?testStatus&deleteKey=" + key).then(resp => resp.json())
                 .then(json => {
                     initTableWithData(json);
+                    Toast("这条记录已经删除",2000)
                 })
     }
 
@@ -222,7 +234,32 @@
         fetch("?testStatus&clear=" + key).then(resp => resp.json())
                 .then(json => {
                     initTableWithData(json);
+                    Toast("清空全部",2000)
                 })
+    }
+    function runAllErr(key) {
+        fetch("?testStatus")
+                .then(resp => resp.json())
+                .then(async(data) => {
+                   let eData= filterError(data);
+                   let i=0;
+                   for(let item of eData){
+                        i++;
+                        let response=await fetch(window.location.origin+"/"+item.key+"?test");
+                        let text=await response.text();
+                        //<strong>Test Pages:</strong> 1 right, 1 wrong, 0 ignored, 0 exceptions
+
+                        Toast(item.key +" ("+i+") "+isPassText(text),2000)
+                   }
+                })
+    }
+
+
+    function isPassText(text) {
+        if(  text.indexOf("0 wrong, 0 ignored, 0 exceptions") >-1){
+            return "通过"
+        }
+        return '失败'
     }
 
     /**
@@ -235,6 +272,38 @@
                 .then(json => {
                     initTableWithData(json);
                 })
+    }
+
+    /**
+     * 生成一个toast
+     * @param msg
+     * @param duration
+     * @constructor
+     */
+    function Toast(msg,duration){
+        Toast._index=Toast._index||0;
+        Toast._index++;
+        if(Toast._index>4) Toast._index=0;
+        let pix=Toast._index*40; //设置上下偏移量
+
+        duration=isNaN(duration)?3000:duration;
+        var m = document.createElement('div');
+        m.innerHTML = msg;
+        m.style.cssText="max-width:60%;min-width: 150px;" +
+                "padding:0 14px;height: 40px;" +
+                "color: rgb(255, 255, 255);line-height: 40px;" +
+                "text-align: center;border-radius: 4px;position: fixed;" +
+                "top: calc(50% + "+pix+"px);" +
+                "left: 50%;" +
+                "transform: translate(-50%, -50%);" +
+                "z-index: 999999;background: rgba(0, 0, 0,.7);font-size: 16px;";
+        document.body.appendChild(m);
+        setTimeout(function() {
+            var d = 0.5;
+            m.style.webkitTransition = '-webkit-transform ' + d + 's ease-in, opacity ' + d + 's ease-in';
+            m.style.opacity = '0';
+            setTimeout(function() { document.body.removeChild(m) }, d * 1000);
+        }, duration);
     }
 
     initTable();
