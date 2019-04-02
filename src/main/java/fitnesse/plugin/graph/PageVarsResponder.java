@@ -5,10 +5,7 @@ import fitnesse.Responder;
 import fitnesse.http.Request;
 import fitnesse.http.Response;
 import fitnesse.http.SimpleResponse;
-import fitnesse.wiki.PathParser;
-import fitnesse.wiki.WikiPage;
-import fitnesse.wiki.WikiPagePath;
-import fitnesse.wiki.WikiPageUtil;
+import fitnesse.wiki.*;
 import fitnesse.wiki.fs.FileSystemPage;
 import fitnesse.wiki.fs.WikiFilePage;
 import fitnesse.wikitext.parser.CompositeVariableSource;
@@ -81,7 +78,7 @@ public class PageVarsResponder implements Responder {
         List<Map> hisCache = new ArrayList();
         List<Map> overLoads = new ArrayList();
 
-        //String vars = page.getVariable("A");
+        //String vars = page.getVariable("A");//只能获取一个变量,没有获取全部变量的API
         while (page != null) {
             if (page.isRoot()) {
                 break;
@@ -89,6 +86,9 @@ public class PageVarsResponder implements Responder {
             ParsingPage pp = null;
             if (page instanceof FileSystemPage) {
                 pp = ((FileSystemPage) page).getParsingPage();
+            }
+            if(page instanceof SymbolicPage){
+                pp=((SymbolicPage) page).getParsingPage();
             }
             if (page instanceof WikiFilePage) {
                 pp = ((WikiFilePage) page).getParsingPage();
@@ -98,6 +98,7 @@ public class PageVarsResponder implements Responder {
                 Map map = (Map) getField(cacheObj, "cache");
                 hisCache.add(map);
             }
+
             page = page.getParent();
         }
         //后入先出

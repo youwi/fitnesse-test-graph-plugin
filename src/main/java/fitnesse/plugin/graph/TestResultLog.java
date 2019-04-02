@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static fitnesse.wiki.WikiPageProperty.*;
 
@@ -21,6 +23,7 @@ import static fitnesse.wiki.WikiPageProperty.*;
  * Created by yu on 2018/11/7.
  */
 public class TestResultLog implements Formatter {
+  //这时使用文件来做储存,没有使用数据库. 使用缓存效率高一些.
   public static String STATUS_FILE = "/tmp/fit_test_status.json";
 
   static boolean committed = true;
@@ -81,8 +84,29 @@ public class TestResultLog implements Formatter {
       if("on".equals(skip)){
         node.put("wrong",0);
       }
+      // 获取上级的结果
+      if(user==null){
+        String content=page.getParent().getData().getContent();
+        if(content.contains("@")){
+          node.put("user",getUserMarked(content));
+        }
+      }
     }
 
+  }
+
+  /**
+   * 提取 标记用户的词
+   * @param ori
+   * @return
+   */
+  public static String getUserMarked(String ori) {
+    Pattern pattern = Pattern.compile("@(.*)");
+    Matcher matcher = pattern.matcher(ori);
+    while(matcher.find()){
+      return  matcher.group();
+    }
+    return null;
   }
 
   JSONObject getObject(JSONObject jsonObject, String key) {
