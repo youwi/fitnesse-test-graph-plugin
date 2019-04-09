@@ -57,7 +57,6 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
     responderFactory.addResponder("varsTagsJson", PageVarsResponder.class);
     responderFactory.addResponder("testHtml", SaveContentResponder.class);
     responderFactory.addResponder("restart", RestartResponder.class);
-    responderFactory.addResponder("searchAsJson", FitSearchJsonResponder.class);
     responderFactory.addResponder("pageHelpJson", PageHelpInfoJsonApi.class);
     responderFactory.addResponder("saveContentPosition", SaveByPosResponder.class);
     responderFactory.addResponder("testNow", TestWithContentResponder.class);
@@ -66,6 +65,10 @@ public class FitnesseWillLoadMe implements PluginFeatureFactory {
     responderFactory.addResponder("ScheduleStatus", ScheduleStatusResponder.class);
     responderFactory.addResponder("fullContent", WikiIncludePageResponder.class);
     responderFactory.addResponder("fullContentWithVar", WikiIncludeWithVarPageResponder.class);
+
+    responderFactory.addResponder("searchAsJson", FitSearchJsonResponder.class);
+    responderFactory.addResponder("searchContentJson", SearchContentJsonResponder.class);
+
 
 
 
